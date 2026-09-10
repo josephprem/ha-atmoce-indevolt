@@ -279,6 +279,7 @@ class AtmozenHomePowerSensor(_AtmozenBase):
             self._hass, entities, self._async_handle_update
         )
         self._async_update()
+        self.async_write_ha_state()
 
     @callback
     def _async_handle_update(self, _event: Event) -> None:
@@ -326,6 +327,7 @@ class AtmozenDerivedPowerSensor(_AtmozenBase):
             self._hass, [self._source], self._async_handle_update
         )
         self._async_update()
+        self.async_write_ha_state()
 
     @callback
     def _async_handle_update(self, _event: Event) -> None:
@@ -359,12 +361,17 @@ class AtmozenHomePowerKwSensor(_AtmozenBase):
             self._hass, ["sensor.atmozen_home_power"], self._async_handle_update
         )
         self._async_update()
+        self.async_write_ha_state()
 
     @callback
     def _async_handle_update(self, _event: Event) -> None:
+        self._async_update()
+        self.async_write_ha_state()
+
+    @callback
+    def _async_update(self) -> None:
         value = _float_state(self._hass, "sensor.atmozen_home_power")
         self._attr_native_value = round((value or 0.0) / 1000, 2)
-        self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self) -> None:
         if self._unsub:
@@ -387,16 +394,21 @@ class AtmozenSelfConsumptionSensor(_AtmozenBase):
             self._hass, [SOURCE_PV_POWER, SOURCE_GRID_POWER], self._async_handle_update
         )
         self._async_update()
+        self.async_write_ha_state()
 
     @callback
     def _async_handle_update(self, _event: Event) -> None:
+        self._async_update()
+        self.async_write_ha_state()
+
+    @callback
+    def _async_update(self) -> None:
         pv = _float_state(self._hass, SOURCE_PV_POWER) or 0.0
         grid = _float_state(self._hass, SOURCE_GRID_POWER) or 0.0
         if pv > 0:
             self._attr_native_value = round(max((pv - max(grid, 0.0)) / pv * 100.0, 0.0), 0)
         else:
             self._attr_native_value = 0.0
-        self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self) -> None:
         if self._unsub:
@@ -417,9 +429,15 @@ class AtmozenGridStatusSensor(_AtmozenBase):
             self._hass, [SOURCE_GRID_POWER], self._async_handle_update
         )
         self._async_update()
+        self.async_write_ha_state()
 
     @callback
     def _async_handle_update(self, _event: Event) -> None:
+        self._async_update()
+        self.async_write_ha_state()
+
+    @callback
+    def _async_update(self) -> None:
         grid = _float_state(self._hass, SOURCE_GRID_POWER) or 0.0
         if grid > 20:
             self._attr_native_value = "Importing"
@@ -427,7 +445,6 @@ class AtmozenGridStatusSensor(_AtmozenBase):
             self._attr_native_value = "Exporting"
         else:
             self._attr_native_value = "Balanced"
-        self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self) -> None:
         if self._unsub:
@@ -448,9 +465,15 @@ class AtmozenSiteStatusSensor(_AtmozenBase):
             self._hass, [SOURCE_PV_POWER], self._async_handle_update
         )
         self._async_update()
+        self.async_write_ha_state()
 
     @callback
     def _async_handle_update(self, _event: Event) -> None:
+        self._async_update()
+        self.async_write_ha_state()
+
+    @callback
+    def _async_update(self) -> None:
         pv = _float_state(self._hass, SOURCE_PV_POWER) or 0.0
         if pv > 100:
             self._attr_native_value = "Producing"
@@ -458,7 +481,6 @@ class AtmozenSiteStatusSensor(_AtmozenBase):
             self._attr_native_value = "Low production"
         else:
             self._attr_native_value = "Idle"
-        self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self) -> None:
         if self._unsub:
