@@ -1,5 +1,9 @@
 # Setup guide
 
+![System overview](diagrams/system-overview.svg)
+
+![Rollout phases](diagrams/phased-setup.svg)
+
 ## Your hardware layout
 
 | Component | Role |

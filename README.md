@@ -9,6 +9,10 @@ Home Assistant custom integration for a hybrid home energy management system (HE
 
 The integration talks to both vendors **locally** (no cloud required) and exposes unified sensors, controls, and HEMS metrics for automations and the Energy dashboard.
 
+![System overview](docs/diagrams/system-overview.svg)
+
+![Product icons](docs/diagrams/icons.svg)
+
 ## Features
 
 - Atmoce PV, grid, and cumulative energy sensors via Modbus TCP
