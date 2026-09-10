@@ -26,6 +26,7 @@ from .const import (
     PLATFORMS,
 )
 from .atmoce import AtmoceModbusClient
+from .atmozen_setup import async_setup_atmozen
 from .coordinator import HemsCoordinator
 from .indevolt import IndevoltApiClient
 
@@ -77,6 +78,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await coordinator.async_config_entry_first_refresh()
     except Exception as err:  # noqa: BLE001 - keep integration loaded; coordinator retries
         _LOGGER.warning("Initial poll failed, sensors will show unavailable until connected: %s", err)
+
+    await async_setup_atmozen(hass, entry)
 
     return True
 

@@ -25,6 +25,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, INDEVOLT_POINT_PACK_SOC
 from .coordinator import HemsCoordinator, HemsData
+from .atmozen_setup import async_add_atmozen_entities
 from .entity import AtmoceEntity, HemsEntity, IndevoltEntity
 
 
@@ -440,3 +441,4 @@ async def async_setup_entry(
         )
 
     async_add_entities(entities)
+    await async_add_atmozen_entities(hass, entry.entry_id, async_add_entities)

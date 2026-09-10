@@ -87,7 +87,7 @@ See `docs/energy-dashboard.md` for a full example.
 
 A dark, mobile-friendly Lovelace dashboard (energy flow, live kW chips, 24h chart) inspired by the Atmozen app.
 
-See [`docs/dashboard.md`](docs/dashboard.md) for setup (HACS cards + `packages/atmozen_dashboard.yaml` + `dashboards/atmozen.yaml`).
+**Installed automatically** when you add the integration (v0.2.0+). You still need the HACS frontend cards — see [`docs/dashboard.md`](docs/dashboard.md).
 
 ## HEMS automations
 
