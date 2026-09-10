@@ -338,16 +338,6 @@ class _BaseDescriptionSensor(SensorEntity):
 class AtmoceSensor(AtmoceEntity, _BaseDescriptionSensor):
     """Atmoce gateway sensor with stable entity IDs (sensor.atmoce_gateway_*)."""
 
-    def __init__(
-        self,
-        coordinator: HemsCoordinator,
-        entry_id: str,
-        description: HemsSensorDescription,
-    ) -> None:
-        AtmoceEntity.__init__(self, coordinator, entry_id)
-        _BaseDescriptionSensor.__init__(self, coordinator, entry_id, description)
-        self._attr_has_entity_name = False
-
     @property
     def suggested_object_id(self) -> str:
         return f"atmoce_gateway_{self.entity_description.key}"
@@ -358,14 +348,11 @@ class AtmoceSensor(AtmoceEntity, _BaseDescriptionSensor):
 
 
 class IndevoltSensor(IndevoltEntity, _BaseDescriptionSensor):
-    def __init__(
-        self,
-        coordinator: HemsCoordinator,
-        entry_id: str,
-        description: HemsSensorDescription,
-    ) -> None:
-        IndevoltEntity.__init__(self, coordinator, entry_id)
-        _BaseDescriptionSensor.__init__(self, coordinator, entry_id, description)
+    """Indevolt storage sensor with stable entity IDs (sensor.indevolt_storage_*)."""
+
+    @property
+    def suggested_object_id(self) -> str:
+        return f"indevolt_storage_{self.entity_description.key}"
 
     @property
     def native_value(self) -> Any:
@@ -402,6 +389,10 @@ class PackSocSensor(IndevoltEntity, SensorEntity):
         self._attr_device_class = SensorDeviceClass.BATTERY
         self._attr_state_class = SensorStateClass.MEASUREMENT
         self.entity_registry_enabled_default = pack_index == 1
+
+    @property
+    def suggested_object_id(self) -> str:
+        return f"indevolt_storage_pack_{self._pack_index}_soc"
 
     @property
     def native_value(self) -> Any:

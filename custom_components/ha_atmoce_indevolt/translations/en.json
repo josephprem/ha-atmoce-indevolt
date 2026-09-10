@@ -49,7 +49,17 @@
       "self_consumption_rate": { "name": "Self-consumption rate" },
       "panel_count": { "name": "Panel count" },
       "microinverter_count": { "name": "Microinverter count" },
-      "pack_soc": { "name": "Pack {pack} SOC" }
+      "pack_soc": { "name": "Pack {pack} SOC" },
+      "atmozen_home_power": { "name": "Home power" },
+      "atmozen_pv_power_kw": { "name": "PV power (kW)" },
+      "atmozen_grid_power_kw": { "name": "Grid power (kW)" },
+      "atmozen_home_power_kw": { "name": "Home power (kW)" },
+      "atmozen_self_consumption_pct": { "name": "Self-consumption" },
+      "atmozen_grid_status": { "name": "Grid status" },
+      "atmozen_site_status": { "name": "Site status" },
+      "atmozen_pv_daily": { "name": "PV today" },
+      "atmozen_grid_import_daily": { "name": "Grid import today" },
+      "atmozen_grid_export_daily": { "name": "Grid export today" }
     },
     "select": {
       "energy_mode": { "name": "Energy mode" }

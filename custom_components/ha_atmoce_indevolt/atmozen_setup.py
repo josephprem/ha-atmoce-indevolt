@@ -30,7 +30,7 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
 from homeassistant.util.yaml.loader import load_yaml
 
-from .const import DOMAIN, HEMS_DEVICE
+from .const import ATMOZEN_DEVICE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -237,13 +237,13 @@ async def _async_install_dashboard(hass: HomeAssistant) -> bool:
 
 
 class _AtmozenBase(SensorEntity):
-    _attr_has_entity_name = False
+    _attr_has_entity_name = True
 
-    def __init__(self, entry_id: str, object_id: str, name: str) -> None:
+    def __init__(self, entry_id: str, object_id: str, translation_key: str) -> None:
         self._entry_id = entry_id
         self._object_id = object_id
         self._attr_unique_id = f"{entry_id}_{object_id}"
-        self._attr_name = name
+        self._attr_translation_key = translation_key
 
     @property
     def suggested_object_id(self) -> str:
@@ -252,10 +252,10 @@ class _AtmozenBase(SensorEntity):
     @property
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
-            identifiers={(DOMAIN, self._entry_id, HEMS_DEVICE)},
-            name="Home Energy Management",
+            identifiers={(DOMAIN, self._entry_id, ATMOZEN_DEVICE)},
+            name="Atmozen",
             manufacturer="ha-atmoce-indevolt",
-            model="Atmozen Dashboard",
+            model="Dashboard helpers",
         )
 
 
@@ -266,7 +266,7 @@ class AtmozenHomePowerSensor(_AtmozenBase):
     _attr_icon = "mdi:home-lightning-bolt"
 
     def __init__(self, hass: HomeAssistant, entry_id: str) -> None:
-        super().__init__(entry_id, "atmozen_home_power", "Atmozen Home Power")
+        super().__init__(entry_id, "atmozen_home_power", "atmozen_home_power")
         self._hass = hass
         self._unsub: Any = None
 
@@ -307,12 +307,12 @@ class AtmozenDerivedPowerSensor(_AtmozenBase):
         self,
         hass: HomeAssistant,
         entry_id: str,
-        unique_id: str,
-        name: str,
+        object_id: str,
+        translation_key: str,
         source: str,
         icon: str,
     ) -> None:
-        super().__init__(entry_id, unique_id, name)
+        super().__init__(entry_id, object_id, translation_key)
         self._hass = hass
         self._source = source
         self._attr_icon = icon
@@ -347,7 +347,7 @@ class AtmozenHomePowerKwSensor(_AtmozenBase):
     _attr_icon = "mdi:home-lightning-bolt"
 
     def __init__(self, hass: HomeAssistant, entry_id: str) -> None:
-        super().__init__(entry_id, "atmozen_home_power_kw", "Atmozen Home Power kW")
+        super().__init__(entry_id, "atmozen_home_power_kw", "atmozen_home_power_kw")
         self._hass = hass
         self._unsub: Any = None
 
@@ -375,7 +375,7 @@ class AtmozenSelfConsumptionSensor(_AtmozenBase):
     _attr_icon = "mdi:percent"
 
     def __init__(self, hass: HomeAssistant, entry_id: str) -> None:
-        super().__init__(entry_id, "atmozen_self_consumption_pct", "Atmozen Self Consumption")
+        super().__init__(entry_id, "atmozen_self_consumption_pct", "atmozen_self_consumption_pct")
         self._hass = hass
         self._unsub: Any = None
 
@@ -405,7 +405,7 @@ class AtmozenGridStatusSensor(_AtmozenBase):
     _attr_icon = "mdi:transmission-tower"
 
     def __init__(self, hass: HomeAssistant, entry_id: str) -> None:
-        super().__init__(entry_id, "atmozen_grid_status", "Atmozen Grid Status")
+        super().__init__(entry_id, "atmozen_grid_status", "atmozen_grid_status")
         self._hass = hass
         self._unsub: Any = None
 
@@ -436,7 +436,7 @@ class AtmozenSiteStatusSensor(_AtmozenBase):
     _attr_icon = "mdi:solar-power-variant"
 
     def __init__(self, hass: HomeAssistant, entry_id: str) -> None:
-        super().__init__(entry_id, "atmozen_site_status", "Atmozen Site Status")
+        super().__init__(entry_id, "atmozen_site_status", "atmozen_site_status")
         self._hass = hass
         self._unsub: Any = None
 
@@ -472,11 +472,11 @@ class AtmozenDailyEnergySensor(_AtmozenBase, RestoreEntity):
         self,
         hass: HomeAssistant,
         entry_id: str,
-        unique_id: str,
-        name: str,
+        object_id: str,
+        translation_key: str,
         source: str,
     ) -> None:
-        super().__init__(entry_id, unique_id, name)
+        super().__init__(entry_id, object_id, translation_key)
         self._hass = hass
         self._source = source
         self._baseline: float | None = None
@@ -544,13 +544,13 @@ async def async_add_atmozen_entities(
     entities: list[SensorEntity] = [
         AtmozenHomePowerSensor(hass, entry_id),
         AtmozenDerivedPowerSensor(
-            hass, entry_id, "atmozen_pv_power_kw", "Atmozen PV Power kW", SOURCE_PV_POWER, "mdi:solar-power"
+            hass, entry_id, "atmozen_pv_power_kw", "atmozen_pv_power_kw", SOURCE_PV_POWER, "mdi:solar-power"
         ),
         AtmozenDerivedPowerSensor(
             hass,
             entry_id,
             "atmozen_grid_power_kw",
-            "Atmozen Grid Power kW",
+            "atmozen_grid_power_kw",
             SOURCE_GRID_POWER,
             "mdi:transmission-tower",
         ),
@@ -558,19 +558,19 @@ async def async_add_atmozen_entities(
         AtmozenSelfConsumptionSensor(hass, entry_id),
         AtmozenGridStatusSensor(hass, entry_id),
         AtmozenSiteStatusSensor(hass, entry_id),
-        AtmozenDailyEnergySensor(hass, entry_id, "atmozen_pv_daily", "Atmozen PV today", SOURCE_PV_ENERGY),
+        AtmozenDailyEnergySensor(hass, entry_id, "atmozen_pv_daily", "atmozen_pv_daily", SOURCE_PV_ENERGY),
         AtmozenDailyEnergySensor(
             hass,
             entry_id,
             "atmozen_grid_import_daily",
-            "Atmozen grid import today",
+            "atmozen_grid_import_daily",
             SOURCE_GRID_IMPORT_ENERGY,
         ),
         AtmozenDailyEnergySensor(
             hass,
             entry_id,
             "atmozen_grid_export_daily",
-            "Atmozen grid export today",
+            "atmozen_grid_export_daily",
             SOURCE_GRID_EXPORT_ENERGY,
         ),
     ]

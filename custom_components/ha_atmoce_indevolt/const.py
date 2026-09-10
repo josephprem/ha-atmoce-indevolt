@@ -23,6 +23,7 @@ DEFAULT_SCAN_INTERVAL = 30
 ATMOCE_DEVICE = "atmoce_gateway"
 INDEVOLT_DEVICE = "indevolt_storage"
 HEMS_DEVICE = "hems_coordinator"
+ATMOZEN_DEVICE = "atmozen_dashboard"
 
 # Atmoce MC100 combiner / MG100 gateway Modbus holding registers (evcc atmoce template).
 ATMOCE_REG_PV_POWER = 60069
