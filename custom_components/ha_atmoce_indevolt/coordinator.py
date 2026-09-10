@@ -36,6 +36,7 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
         indevolt: IndevoltApiClient | None,
         scan_interval: int,
         panel_count: int,
+        microinverter_count: int,
     ) -> None:
         super().__init__(
             hass,
@@ -46,6 +47,7 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
         self.atmoce = atmoce
         self.indevolt = indevolt
         self.panel_count = panel_count
+        self.microinverter_count = microinverter_count
 
     async def _async_update_data(self) -> HemsData:
         data = HemsData()
@@ -110,6 +112,7 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
 
         return {
             "panel_count": self.panel_count,
+            "microinverter_count": self.microinverter_count,
             "pv_power_w": pv_power,
             "grid_power_w": grid_power,
             "battery_power_w": battery_power,

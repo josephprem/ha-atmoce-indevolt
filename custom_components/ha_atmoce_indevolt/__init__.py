@@ -14,10 +14,13 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_ATMOCE_HOST,
+    CONF_ATMOCE_MICROINVERTER_COUNT,
     CONF_ATMOCE_PANEL_COUNT,
     CONF_ATMOCE_PORT,
     CONF_INDEVOLT_HOST,
     CONF_INDEVOLT_PORT,
+    DEFAULT_ATMOCE_MICROINVERTER_COUNT,
+    DEFAULT_ATMOCE_PANEL_COUNT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     PLATFORMS,
@@ -54,7 +57,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         atmoce_client,
         indevolt_client,
         data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-        data.get(CONF_ATMOCE_PANEL_COUNT, 18),
+        data.get(CONF_ATMOCE_PANEL_COUNT, DEFAULT_ATMOCE_PANEL_COUNT),
+        data.get(CONF_ATMOCE_MICROINVERTER_COUNT, DEFAULT_ATMOCE_MICROINVERTER_COUNT),
     )
     await coordinator.async_config_entry_first_refresh()
 

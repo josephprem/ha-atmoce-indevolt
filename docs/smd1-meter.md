@@ -4,7 +4,7 @@ Your full stack:
 
 | Device | Role in HEMS |
 |--------|----------------|
-| **Atmoce** (18 panels + MG100) | Solar production + grid CT via Modbus |
+| **Atmoce** (18× 500 W panels, 9× 1000 W MI, MC100) | Solar production + grid CT via Modbus |
 | **Indevolt SF3000AC** | AC battery inverter, local OpenData API |
 | **Indevolt SFA3600** | Battery pack(s) |
 | **Solarman SMD1** | Whole-home consumption meter (LoRa → SF3000) |

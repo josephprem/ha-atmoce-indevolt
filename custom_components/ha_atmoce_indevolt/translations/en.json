@@ -3,11 +3,12 @@
     "step": {
       "user": {
         "title": "Atmoce + Indevolt HEMS",
-        "description": "Connect your Atmoce PV gateway and/or Indevolt AC battery locally. At least one device is required.",
+        "description": "Connect your Atmoce MC100 combiner (or MG100 gateway) and/or Indevolt AC battery locally. At least one device is required.",
         "data": {
-          "atmoce_host": "Atmoce gateway IP (MG100 / MC100)",
+          "atmoce_host": "Atmoce combiner IP (MC100 / MG100)",
           "atmoce_port": "Atmoce Modbus TCP port",
           "atmoce_panel_count": "Number of PV panels",
+          "atmoce_microinverter_count": "Number of microinverters",
           "indevolt_host": "Indevolt device IP (SF3000AC)",
           "indevolt_port": "Indevolt HTTP API port",
           "scan_interval": "Polling interval (seconds)"
@@ -47,6 +48,7 @@
       "pv_surplus": { "name": "PV surplus" },
       "self_consumption_rate": { "name": "Self-consumption rate" },
       "panel_count": { "name": "Panel count" },
+      "microinverter_count": { "name": "Microinverter count" },
       "pack_soc": { "name": "Pack {pack} SOC" }
     },
     "select": {

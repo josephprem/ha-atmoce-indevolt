@@ -8,8 +8,9 @@
 
 | Component | Role |
 |-----------|------|
-| 18× Atmoce PV panels + microinverters | Solar production |
-| Atmoce MG100 / MC100 gateway | PV aggregation, grid metering, Modbus API |
+| 18× 500 W Atmoce PV panels | Solar production (9 kWp nameplate) |
+| 9× 1000 W microinverters (2 panels each) | DC/AC conversion |
+| Atmoce **MC100** combiner | String aggregation, grid metering, Modbus API |
 | Indevolt SF3000AC | AC-coupled hybrid inverter / storage controller |
 | Indevolt SFA3600 | Extended LiFePO₄ battery pack |
 | [Solarman SMD1](https://fr.indevolt.com/products/solarman-lora-compteur-electrique-intelligent-smd1) (LoRa) | Whole-home consumption meter → SF3000AC |
@@ -20,13 +21,13 @@ The SF3000AC is the network endpoint for Home Assistant. SFA3600 packs appear as
 
 Give stable DHCP reservations to:
 
-- Atmoce gateway (`192.168.1.8`)
+- Atmoce MC100 combiner (`192.168.1.8`)
 - Indevolt SF3000AC (example `192.168.1.51`)
 
 ## Step 2 — Enable Atmoce Modbus
 
 1. Open **Atmozen**
-2. Confirm the gateway is online
+2. Confirm the MC100 combiner is online
 3. Ask your installer to enable **Modbus TCP** if the option is not visible
 4. Verify port `502` from a workstation:
 
@@ -49,7 +50,7 @@ Expected: JSON with key `"6002"` (battery SOC).
 
 ## Step 4 — Install integration
 
-Follow the README installation section, then add the integration with both IPs and `atmoce_panel_count: 18`.
+Follow the README installation section, then add the integration with both IPs, `atmoce_panel_count: 18`, and `atmoce_microinverter_count: 9`.
 
 ## Step 5 — Optional HEMS package
 

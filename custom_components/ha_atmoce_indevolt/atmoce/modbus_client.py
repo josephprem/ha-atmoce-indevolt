@@ -1,4 +1,4 @@
-"""Local Modbus TCP client for Atmoce MG100 / MC100 gateways."""
+"""Local Modbus TCP client for Atmoce MC100 combiner / MG100 gateway."""
 
 from __future__ import annotations
 

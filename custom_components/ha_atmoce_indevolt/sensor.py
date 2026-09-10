@@ -285,6 +285,14 @@ HEMS_SENSORS: tuple[HemsSensorDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
+    HemsSensorDescription(
+        key="microinverter_count",
+        translation_key="microinverter_count",
+        source="hems",
+        value_key="microinverter_count",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
 )
 
 

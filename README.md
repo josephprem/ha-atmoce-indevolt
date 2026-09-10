@@ -2,16 +2,16 @@
 
 Home Assistant custom integration for a hybrid home energy management system (HEMS) built from:
 
-- **Atmoce** PV ecosystem (18 microinverter panels via MG100 / MC100 gateway, Modbus TCP)
+- **Atmoce** PV ecosystem (18× 500 W panels on 9× 1000 W microinverters via **MC100 combiner**, Modbus TCP)
 - **Indevolt SF3000AC** AC-coupled storage inverter
 - **Indevolt SFA3600** extended battery pack(s)
 - **Solarman SMD1** LoRa smart meter (whole-home load via SF3000)
 
 The integration talks to both vendors **locally** (no cloud required) and exposes unified sensors, controls, and HEMS metrics for automations and the Energy dashboard.
 
-[![System overview](docs/diagrams/system-overview.png)](docs/diagrams/system-overview.svg)
+[![Site energy and meters](docs/diagrams/system-overview.png)](docs/diagrams/system-overview.svg)
 
-[![Product icons](docs/diagrams/icons.png)](docs/diagrams/icons.svg)
+[![Data collection path](docs/diagrams/data-flow.png)](docs/diagrams/data-flow.svg)
 
 ## Features
 
@@ -27,11 +27,13 @@ The integration talks to both vendors **locally** (no cloud required) and expose
 
 ## Prerequisites
 
-### Atmoce gateway
+### Atmoce MC100 combiner
 
-1. Gateway model **MG100** or **MC100** with Modbus TCP enabled (default port `502`).
+1. **MC100** combiner (aggregates microinverter strings) or **MG100** gateway with Modbus TCP enabled (default port `502`).
 2. Enable Modbus in the **Atmozen** app if your installer has not already done so.
-3. Gateway and Home Assistant on the same LAN.
+3. Combiner and Home Assistant on the same LAN.
+
+Typical array: **18 panels × 500 W** (9 kWp) on **9 microinverters × 1000 W** (two panels per unit).
 
 ### Solarman SMD1 meter
 
@@ -65,7 +67,7 @@ Copy `custom_components/ha_atmoce_indevolt` into your Home Assistant `config/cus
 1. **Settings → Devices & Services → Add Integration**
 2. Search for **Atmoce + Indevolt HEMS**
 3. Enter:
-   - Atmoce gateway IP (and panel count, default 18)
+   - Atmoce combiner IP (panel count default 18, microinverter count default 9)
    - Indevolt device IP
    - Optional polling interval (default 30 s)
 
@@ -105,7 +107,7 @@ This adds a surplus-charging automation that starts Indevolt charging when Atmoc
 ## Architecture
 
 ```
-Atmoce MG100 ──Modbus TCP──► HA integration ──► HEMS coordinator ──► sensors / automations
+Atmoce MC100 ──Modbus TCP──► HA integration ──► HEMS coordinator ──► sensors / automations
 Indevolt SF3000AC ──HTTP OpenData──►           ▲
 SFA3600 pack(s) ───────────────────────────────┘
 ```

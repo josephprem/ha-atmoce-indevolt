@@ -8,12 +8,15 @@ PLATFORMS = ["sensor", "select", "number", "switch", "button"]
 CONF_ATMOCE_HOST = "atmoce_host"
 CONF_ATMOCE_PORT = "atmoce_port"
 CONF_ATMOCE_PANEL_COUNT = "atmoce_panel_count"
+CONF_ATMOCE_MICROINVERTER_COUNT = "atmoce_microinverter_count"
 CONF_INDEVOLT_HOST = "indevolt_host"
 CONF_INDEVOLT_PORT = "indevolt_port"
 CONF_SCAN_INTERVAL = "scan_interval"
 
 DEFAULT_ATMOCE_HOST = "192.168.1.8"
 DEFAULT_ATMOCE_PORT = 502
+DEFAULT_ATMOCE_PANEL_COUNT = 18
+DEFAULT_ATMOCE_MICROINVERTER_COUNT = 9
 DEFAULT_INDEVOLT_PORT = 8080
 DEFAULT_SCAN_INTERVAL = 30
 
@@ -21,7 +24,7 @@ ATMOCE_DEVICE = "atmoce_gateway"
 INDEVOLT_DEVICE = "indevolt_storage"
 HEMS_DEVICE = "hems_coordinator"
 
-# Atmoce MG100 / MC100 gateway Modbus holding registers (see evcc atmoce template).
+# Atmoce MC100 combiner / MG100 gateway Modbus holding registers (evcc atmoce template).
 ATMOCE_REG_PV_POWER = 60069
 ATMOCE_REG_BATTERY_POWER = 60071
 ATMOCE_REG_GRID_POWER = 60073

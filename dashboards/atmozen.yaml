@@ -230,6 +230,6 @@ views:
       - type: markdown
         content: |
           ## Site
-          **18× Atmoce** on gateway `192.168.1.8` · **SF3000AC + SFA3600** · **SMD1 LoRa**
+          **18× 500 W** panels · **9× 1000 W** microinverters · **MC100** `192.168.1.8` · **SF3000AC + SFA3600** · **SMD1 LoRa**
 
           Home power uses the SMD1 meter when Indevolt is configured; otherwise it is estimated from Atmoce.

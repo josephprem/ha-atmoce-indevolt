@@ -14,11 +14,14 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_ATMOCE_HOST,
+    CONF_ATMOCE_MICROINVERTER_COUNT,
     CONF_ATMOCE_PANEL_COUNT,
     CONF_ATMOCE_PORT,
     CONF_INDEVOLT_HOST,
     CONF_INDEVOLT_PORT,
     DEFAULT_ATMOCE_HOST,
+    DEFAULT_ATMOCE_MICROINVERTER_COUNT,
+    DEFAULT_ATMOCE_PANEL_COUNT,
     DEFAULT_ATMOCE_PORT,
     DEFAULT_INDEVOLT_PORT,
     DEFAULT_SCAN_INTERVAL,
@@ -31,9 +34,12 @@ STEP_USER_SCHEMA = vol.Schema(
     {
         vol.Optional(CONF_ATMOCE_HOST, default=DEFAULT_ATMOCE_HOST): str,
         vol.Optional(CONF_ATMOCE_PORT, default=DEFAULT_ATMOCE_PORT): int,
-        vol.Optional(CONF_ATMOCE_PANEL_COUNT, default=18): vol.All(
+        vol.Optional(CONF_ATMOCE_PANEL_COUNT, default=DEFAULT_ATMOCE_PANEL_COUNT): vol.All(
             int, vol.Range(min=1, max=90)
         ),
+        vol.Optional(
+            CONF_ATMOCE_MICROINVERTER_COUNT, default=DEFAULT_ATMOCE_MICROINVERTER_COUNT
+        ): vol.All(int, vol.Range(min=1, max=45)),
         vol.Optional(CONF_INDEVOLT_HOST): str,
         vol.Optional(CONF_INDEVOLT_PORT, default=DEFAULT_INDEVOLT_PORT): int,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(
