@@ -1,0 +1,51 @@
+# Optional Home Assistant package for PV-surplus battery charging.
+# Include from configuration.yaml:
+#   homeassistant:
+#     packages:
+#       ha_atmoce_indevolt_hems: !include packages/ha_atmoce_indevolt_hems.yaml
+#
+# Replace ENTITY IDs below with your actual entity IDs after setup.
+
+input_number:
+  hems_pv_surplus_charge_threshold_w:
+    name: HEMS PV surplus charge threshold
+    min: 200
+    max: 5000
+    step: 100
+    unit_of_measurement: W
+    initial: 800
+
+automation:
+  - id: hems_charge_indevolt_from_pv_surplus
+    alias: HEMS - Charge Indevolt from PV surplus
+    description: Start charging when Atmoce PV surplus stays above the threshold.
+    mode: single
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ha_atmoce_indevolt_pv_surplus
+        above: input_number.hems_pv_surplus_charge_threshold_w
+        for:
+          minutes: 3
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.ha_atmoce_indevolt_battery_soc
+        below: 95
+    action:
+      - service: ha_atmoce_indevolt.charge_battery
+        data:
+          power: 1200
+          target_soc: 95
+
+  - id: hems_stop_forced_charge_on_low_surplus
+    alias: HEMS - Return to self-consumption when surplus ends
+    mode: single
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ha_atmoce_indevolt_pv_surplus
+        below: 200
+        for:
+          minutes: 5
+    action:
+      - service: button.press
+        target:
+          entity_id: button.ha_atmoce_indevolt_return_self_consumption

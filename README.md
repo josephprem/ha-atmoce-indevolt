@@ -1,0 +1,109 @@
+# ha-atmoce-indevolt
+
+Home Assistant custom integration for a hybrid home energy management system (HEMS) built from:
+
+- **Atmoce** PV ecosystem (18 microinverter panels via MG100 / MC100 gateway, Modbus TCP)
+- **Indevolt SF3000AC** AC-coupled storage inverter
+- **Indevolt SFA3600** extended battery pack(s)
+
+The integration talks to both vendors **locally** (no cloud required) and exposes unified sensors, controls, and HEMS metrics for automations and the Energy dashboard.
+
+## Features
+
+- Atmoce PV, grid, and cumulative energy sensors via Modbus TCP
+- Indevolt battery SOC, power, AC flow, per-pack SOC (SFA modules), and limits via HTTP OpenData
+- HEMS computed sensors when both sides are configured:
+  - Site consumption
+  - PV surplus
+  - Self-consumption rate
+- Indevolt controls: energy mode, backup SOC, feed-in limit, max AC output, grid charging
+- Services: `ha_atmoce_indevolt.charge_battery`, `ha_atmoce_indevolt.discharge_battery`
+- Example automations package for surplus charging
+
+## Prerequisites
+
+### Atmoce gateway
+
+1. Gateway model **MG100** or **MC100** with Modbus TCP enabled (default port `502`).
+2. Enable Modbus in the **Atmozen** app if your installer has not already done so.
+3. Gateway and Home Assistant on the same LAN.
+
+### Indevolt SF3000AC
+
+1. Create a **direct device connection** in the Indevolt app.
+2. Enable **Local API** and choose protocol **HTTP** (not HTTPS for now).
+3. Note the device IP (router, app, or UDP discovery on port `8099` / `AT+IGDEVICEIP`).
+4. Default OpenData port is usually `8080`.
+
+## Installation
+
+### HACS (recommended)
+
+1. Add this repository as a custom HACS integration.
+2. Install **Atmoce + Indevolt HEMS**.
+3. Restart Home Assistant.
+
+### Manual
+
+Copy `custom_components/ha_atmoce_indevolt` into your Home Assistant `config/custom_components/` directory and restart.
+
+## Configuration
+
+1. **Settings → Devices & Services → Add Integration**
+2. Search for **Atmoce + Indevolt HEMS**
+3. Enter:
+   - Atmoce gateway IP (and panel count, default 18)
+   - Indevolt device IP
+   - Optional polling interval (default 30 s)
+
+At least one device IP is required.
+
+## Energy dashboard
+
+Map entities in **Settings → Dashboards → Energy**:
+
+| Role | Suggested entity |
+|------|------------------|
+| Solar production | `sensor.*_pv_power` |
+| Grid consumption | `sensor.*_grid_power` (configure sign in Energy UI) |
+| Battery | `sensor.*_battery_soc` / `sensor.*_battery_power` |
+
+See `docs/energy-dashboard.md` for a full example.
+
+## HEMS automations
+
+Optional package:
+
+```yaml
+# configuration.yaml
+homeassistant:
+  packages:
+    ha_atmoce_indevolt_hems: !include packages/ha_atmoce_indevolt_hems.yaml
+```
+
+This adds a surplus-charging automation that starts Indevolt charging when Atmoce PV surplus exceeds a threshold.
+
+## Architecture
+
+```
+Atmoce MG100 ──Modbus TCP──► HA integration ──► HEMS coordinator ──► sensors / automations
+Indevolt SF3000AC ──HTTP OpenData──►           ▲
+SFA3600 pack(s) ───────────────────────────────┘
+```
+
+## Development
+
+```bash
+python3 -m compileall custom_components/ha_atmoce_indevolt
+```
+
+## References
+
+- [Indevolt OpenData API](https://github.com/INDEVOLT/indevolt-doc/blob/main/docs/hardware/geek/open-data.md)
+- [Home Assistant Indevolt integration](https://www.home-assistant.io/integrations/indevolt/)
+- [evcc Atmoce Modbus template](https://github.com/evcc-io/evcc/blob/master/templates/definition/meter/atmoce.yaml)
+- [Atmoce community HA integration](https://github.com/pacorola/Atmoce_battery_HA)
+
+## License
+
+MIT

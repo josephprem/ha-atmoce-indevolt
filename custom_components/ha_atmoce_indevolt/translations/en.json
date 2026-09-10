@@ -1,0 +1,68 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Atmoce + Indevolt HEMS",
+        "description": "Connect your Atmoce PV gateway and/or Indevolt AC battery locally. At least one device is required.",
+        "data": {
+          "atmoce_host": "Atmoce gateway IP (MG100 / MC100)",
+          "atmoce_port": "Atmoce Modbus TCP port",
+          "atmoce_panel_count": "Number of PV panels",
+          "indevolt_host": "Indevolt device IP (SF3000AC)",
+          "indevolt_port": "Indevolt HTTP API port",
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the device. Check IP, local API settings, and that Modbus TCP is enabled for Atmoce.",
+      "device_required": "Enter at least one device IP address."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "pv_power": { "name": "PV power" },
+      "grid_power": { "name": "Grid power" },
+      "grid_voltage_a": { "name": "Grid voltage phase A" },
+      "grid_voltage_b": { "name": "Grid voltage phase B" },
+      "grid_voltage_c": { "name": "Grid voltage phase C" },
+      "grid_current_a": { "name": "Grid current phase A" },
+      "grid_current_b": { "name": "Grid current phase B" },
+      "grid_current_c": { "name": "Grid current phase C" },
+      "pv_energy_total": { "name": "PV energy total" },
+      "grid_import_energy_total": { "name": "Grid import energy total" },
+      "grid_export_energy_total": { "name": "Grid export energy total" },
+      "battery_soc": { "name": "Battery SOC" },
+      "battery_power": { "name": "Battery power" },
+      "ac_input_power": { "name": "AC input power" },
+      "ac_output_power": { "name": "AC output power" },
+      "rated_capacity": { "name": "Rated capacity" },
+      "grid_voltage": { "name": "Grid voltage" },
+      "grid_frequency": { "name": "Grid frequency" },
+      "meter_power": { "name": "Meter power" },
+      "bypass_power": { "name": "Bypass power" },
+      "ac_input_energy": { "name": "AC input energy" },
+      "ac_output_energy": { "name": "AC output energy" },
+      "site_consumption": { "name": "Site consumption" },
+      "pv_surplus": { "name": "PV surplus" },
+      "self_consumption_rate": { "name": "Self-consumption rate" },
+      "panel_count": { "name": "Panel count" },
+      "pack_soc": { "name": "Pack {pack} SOC" }
+    },
+    "select": {
+      "energy_mode": { "name": "Energy mode" }
+    },
+    "number": {
+      "backup_soc": { "name": "Backup SOC" },
+      "feed_in_limit": { "name": "Feed-in limit" },
+      "max_ac_output": { "name": "Max AC output" }
+    },
+    "switch": {
+      "grid_charging": { "name": "Grid charging" }
+    },
+    "button": {
+      "return_self_consumption": { "name": "Return to self-consumption" },
+      "release_forced_battery": { "name": "Release forced battery mode" }
+    }
+  }
+}
