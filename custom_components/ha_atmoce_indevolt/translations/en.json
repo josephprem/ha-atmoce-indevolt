@@ -26,6 +26,7 @@
       "grid_power": { "name": "Grid power" },
       "grid_import_power": { "name": "Grid import power" },
       "grid_export_power": { "name": "Grid export power" },
+      "home_power": { "name": "Home power" },
       "grid_voltage_a": { "name": "Grid voltage phase A" },
       "grid_voltage_b": { "name": "Grid voltage phase B" },
       "grid_voltage_c": { "name": "Grid voltage phase C" },

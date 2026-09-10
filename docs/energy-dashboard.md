@@ -25,12 +25,35 @@ The Energy dashboard uses **different entity types** for different fields:
 1. **Settings → Dashboards → Energy → Electricity grid → Add grid connection**
 2. **Energy imported from grid** → `sensor.atmoce_gateway_grid_import_energy_total`
 3. **Energy returned to grid** → `sensor.atmoce_gateway_grid_export_energy_total`
-4. **Power** (optional, for live flow):
-   - Import: `sensor.atmoce_gateway_grid_import_power`
-   - Export: `sensor.atmoce_gateway_grid_export_power`
+4. **Power measurement** (required for Energy Distribution live flow on HA 2026.x):
+   - Consumption / import: `sensor.atmoce_gateway_grid_import_power`
+   - Return / export: `sensor.atmoce_gateway_grid_export_power`
 5. **Solar panels → Add solar production**
    - Energy: `sensor.atmoce_gateway_pv_energy_total`
-   - Power (optional): `sensor.atmoce_gateway_pv_power`
+   - Power: `sensor.atmoce_gateway_pv_power`
+
+## Energy Distribution shows 0 Wh / 0 kWh
+
+Your screenshot (Summary → Energy distribution) means the **card is working**, but Home Assistant has **no live power** and/or **no energy statistics** to plot yet.
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| Solar / Grid / Home all **0 Wh** | Power sensors not set in Energy config | Add power sensors in steps 4–5 above (kWh alone is not enough) |
+| All **0 Wh** at night | Normal if PV and grid are ~0 W | Check again during daylight |
+| **Totals 0 kWh** | Statistics not built yet, or period is empty | Wait 1–2 h after setup; open **Developer tools → Statistics** |
+| Totals stay 0 in daylight | kWh sensors read 0 from MC100 | Check `sensor.atmoce_gateway_pv_energy_total` in States |
+
+On **HA Core 2026.9.x** the animated flow uses **power (W)** entities. The **Totals** table uses **energy (kWh)** statistics from the same Energy configuration.
+
+Verify in **Developer tools → States** during the day:
+
+| Entity | Should show |
+|--------|-------------|
+| `sensor.atmoce_gateway_pv_power` | > 0 W when producing |
+| `sensor.atmoce_gateway_grid_import_power` | > 0 W when importing |
+| `sensor.atmoce_gateway_home_power` | estimated home load (PV + grid) |
+
+Tabs on HA 2026.9: **Summary** (distribution + totals), **Electricity** (charts), **Now** (live power).
 
 ## Entity names (not `pv_power` alone)
 

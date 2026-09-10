@@ -115,9 +115,12 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
 
         grid_import_power = None
         grid_export_power = None
+        home_power = None
         if grid_power is not None:
             grid_import_power = max(float(grid_power), 0.0)
             grid_export_power = max(-float(grid_power), 0.0)
+        if pv_power is not None and grid_power is not None:
+            home_power = max(float(pv_power) + float(grid_power), 0.0)
 
         return {
             "panel_count": self.panel_count,
@@ -126,6 +129,7 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
             "grid_power_w": grid_power,
             "grid_import_power_w": grid_import_power,
             "grid_export_power_w": grid_export_power,
+            "home_power_w": home_power,
             "battery_power_w": battery_power,
             "meter_power_w": meter_power,
             "site_consumption_w": site_consumption,

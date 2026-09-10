@@ -160,6 +160,15 @@ ATMOCE_SENSORS: tuple[HemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    HemsSensorDescription(
+        key="home_power",
+        translation_key="home_power",
+        source="computed",
+        value_key="home_power_w",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
 )
 
 INDEVOLT_SENSORS: tuple[HemsSensorDescription, ...] = (
