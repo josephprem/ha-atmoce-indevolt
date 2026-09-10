@@ -338,6 +338,15 @@ class _BaseDescriptionSensor(SensorEntity):
 class AtmoceSensor(AtmoceEntity, _BaseDescriptionSensor):
     """Atmoce gateway sensor with stable entity IDs (sensor.atmoce_gateway_*)."""
 
+    def __init__(
+        self,
+        coordinator: HemsCoordinator,
+        entry_id: str,
+        description: HemsSensorDescription,
+    ) -> None:
+        AtmoceEntity.__init__(self, coordinator, entry_id)
+        _BaseDescriptionSensor.__init__(self, coordinator, entry_id, description)
+
     @property
     def suggested_object_id(self) -> str:
         return f"atmoce_gateway_{self.entity_description.key}"
@@ -349,6 +358,15 @@ class AtmoceSensor(AtmoceEntity, _BaseDescriptionSensor):
 
 class IndevoltSensor(IndevoltEntity, _BaseDescriptionSensor):
     """Indevolt storage sensor with stable entity IDs (sensor.indevolt_storage_*)."""
+
+    def __init__(
+        self,
+        coordinator: HemsCoordinator,
+        entry_id: str,
+        description: HemsSensorDescription,
+    ) -> None:
+        IndevoltEntity.__init__(self, coordinator, entry_id)
+        _BaseDescriptionSensor.__init__(self, coordinator, entry_id, description)
 
     @property
     def suggested_object_id(self) -> str:

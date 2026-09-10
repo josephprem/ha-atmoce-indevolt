@@ -231,8 +231,11 @@ async def _async_install_dashboard(hass: HomeAssistant) -> bool:
     storage = LovelaceStorage(
         hass, {CONF_URL_PATH: DASHBOARD_URL_PATH, "id": dashboard_item["id"]}
     )
-    await storage.async_load(False)
-    await storage.async_save(config)
+    try:
+        await storage.async_save(config)
+    except Exception:
+        _LOGGER.exception("Failed to save Atmozen dashboard config")
+        return False
     return True
 
 

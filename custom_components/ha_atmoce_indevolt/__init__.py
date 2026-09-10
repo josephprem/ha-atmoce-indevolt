@@ -79,7 +79,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except Exception as err:  # noqa: BLE001 - keep integration loaded; coordinator retries
         _LOGGER.warning("Initial poll failed, sensors will show unavailable until connected: %s", err)
 
-    await async_setup_atmozen(hass, entry)
+    try:
+        await async_setup_atmozen(hass, entry)
+    except Exception as err:  # noqa: BLE001 - dashboard/theme must not block sensors
+        _LOGGER.warning("Atmozen dashboard setup failed, sensors still available: %s", err)
 
     return True
 
