@@ -25,9 +25,11 @@ The **integration** (`ha_atmoce_indevolt`) must already be installed and showing
 3. Enter Atmoce IP `192.168.1.8` (Indevolt can stay empty for now).
 4. Confirm you see a **PV power** sensor under **Developer tools → States**.
 
-Expected entity ID (new installs): `sensor.atmoce_gateway_pv_power`
+Expected entity ID: `sensor.atmoce_gateway_pv_power` (friendly name **PV power** — not the literal string `pv_power`).
 
-If you set up the integration before v0.1.0, yours may be `sensor.atmoce_mc100_combiner_pv_power` instead — both work; use your actual name in the YAML files.
+If you set up before the gateway rename, yours may be `sensor.atmoce_mc100_combiner_pv_power`.
+
+For the **Energy dashboard** picker requirements, see [`energy-dashboard.md`](energy-dashboard.md).
 
 If no Atmoce sensors exist at all, fix the integration before continuing (see [Troubleshooting missing sensors](#troubleshooting-missing-sensors) below).
 

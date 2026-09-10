@@ -60,7 +60,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         data.get(CONF_ATMOCE_PANEL_COUNT, DEFAULT_ATMOCE_PANEL_COUNT),
         data.get(CONF_ATMOCE_MICROINVERTER_COUNT, DEFAULT_ATMOCE_MICROINVERTER_COUNT),
     )
-    await coordinator.async_config_entry_first_refresh()
 
     _register_services(hass)
 
@@ -70,7 +69,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "indevolt_host": indevolt_host,
     }
 
+    # Register entities even when the first Modbus/API poll fails (they show unavailable
+    # until data arrives). Previously first_refresh ran before platforms and blocked setup.
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    try:
+        await coordinator.async_config_entry_first_refresh()
+    except Exception as err:  # noqa: BLE001 - keep integration loaded; coordinator retries
+        _LOGGER.warning("Initial poll failed, sensors will show unavailable until connected: %s", err)
+
     return True
 
 
