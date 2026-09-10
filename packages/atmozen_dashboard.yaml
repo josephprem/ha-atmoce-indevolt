@@ -1,0 +1,102 @@
+# Template sensors and utility meters for the Atmozen-style dashboard.
+# Include from configuration.yaml:
+#   homeassistant:
+#     packages:
+#       atmozen_dashboard: !include packages/atmozen_dashboard.yaml
+#
+# Adjust entity IDs below if your Atmoce device slug differs.
+# Default device slug from integration: atmoce_gateway
+
+template:
+  - sensor:
+      - name: "Atmozen Home Power"
+        unique_id: atmozen_home_power
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        icon: mdi:home-lightning-bolt
+        state: >
+          {% set pv = states('sensor.atmoce_gateway_pv_power') | float(0) %}
+          {% set grid = states('sensor.atmoce_gateway_grid_power') | float(0) %}
+          {{ max(pv + grid, 0) | round(0) }}
+
+      - name: "Atmozen PV Power kW"
+        unique_id: atmozen_pv_power_kw
+        unit_of_measurement: kW
+        device_class: power
+        state_class: measurement
+        icon: mdi:solar-power
+        state: >
+          {{ (states('sensor.atmoce_gateway_pv_power') | float(0) / 1000) | round(2) }}
+
+      - name: "Atmozen Grid Power kW"
+        unique_id: atmozen_grid_power_kw
+        unit_of_measurement: kW
+        device_class: power
+        state_class: measurement
+        icon: mdi:transmission-tower
+        state: >
+          {{ (states('sensor.atmoce_gateway_grid_power') | float(0) / 1000) | round(2) }}
+
+      - name: "Atmozen Home Power kW"
+        unique_id: atmozen_home_power_kw
+        unit_of_measurement: kW
+        device_class: power
+        state_class: measurement
+        icon: mdi:home-lightning-bolt
+        state: >
+          {{ (states('sensor.atmozen_home_power') | float(0) / 1000) | round(2) }}
+
+      - name: "Atmozen Self Consumption"
+        unique_id: atmozen_self_consumption_pct
+        unit_of_measurement: "%"
+        state_class: measurement
+        icon: mdi:percent
+        state: >
+          {% set pv = states('sensor.atmoce_gateway_pv_power') | float(0) %}
+          {% set grid = states('sensor.atmoce_gateway_grid_power') | float(0) %}
+          {% if pv > 0 %}
+            {{ ((pv - max(grid, 0)) / pv * 100) | round(0) }}
+          {% else %}
+            0
+          {% endif %}
+
+      - name: "Atmozen Grid Status"
+        unique_id: atmozen_grid_status
+        icon: mdi:transmission-tower
+        state: >
+          {% set g = states('sensor.atmoce_gateway_grid_power') | float(0) %}
+          {% if g > 20 %}
+            Importing
+          {% elif g < -20 %}
+            Exporting
+          {% else %}
+            Balanced
+          {% endif %}
+
+      - name: "Atmozen Site Status"
+        unique_id: atmozen_site_status
+        icon: mdi:solar-power-variant
+        state: >
+          {% set pv = states('sensor.atmoce_gateway_pv_power') | float(0) %}
+          {% if pv > 100 %}
+            Producing
+          {% elif pv > 0 %}
+            Low production
+          {% else %}
+            Idle
+          {% endif %}
+
+utility_meter:
+  atmozen_pv_daily:
+    source: sensor.atmoce_gateway_pv_energy_total
+    name: Atmozen PV today
+    cycle: daily
+  atmozen_grid_import_daily:
+    source: sensor.atmoce_gateway_grid_import_energy_total
+    name: Atmozen grid import today
+    cycle: daily
+  atmozen_grid_export_daily:
+    source: sensor.atmoce_gateway_grid_export_energy_total
+    name: Atmozen grid export today
+    cycle: daily

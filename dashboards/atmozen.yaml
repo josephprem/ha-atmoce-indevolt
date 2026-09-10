@@ -1,0 +1,226 @@
+# Atmozen-inspired energy dashboard for ha-atmoce-indevolt
+#
+# Register in configuration.yaml:
+# lovelace:
+#   dashboards:
+#     atmozen:
+#       mode: yaml
+#       title: Atmozen
+#       icon: mdi:solar-power-variant
+#       show_in_sidebar: true
+#       filename: dashboards/atmozen.yaml
+#
+# Recommended HACS cards:
+# - power-flow-card-plus
+# - mushroom
+# - apexcharts-card
+# - card-mod (optional polish)
+
+title: Atmozen
+views:
+  - title: Home
+    path: home
+    icon: mdi:solar-power-variant
+    theme: atmozen
+    cards:
+      - type: custom:mushroom-template-card
+        primary: Home Energy
+        secondary: "{{ states('sensor.atmozen_site_status') }} · {{ states('sensor.atmozen_grid_status') }}"
+        icon: mdi:solar-power-variant
+        icon_color: amber
+        layout: horizontal
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 20px;
+              background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+              color: #f9fafb;
+              border: 1px solid rgba(255,255,255,0.08);
+            }
+
+      - type: custom:power-flow-card-plus
+        entities:
+          solar: sensor.atmoce_gateway_pv_power
+          grid: sensor.atmoce_gateway_grid_power
+          home: sensor.atmozen_home_power
+          # Uncomment when Indevolt is configured:
+          # battery: sensor.indevolt_storage_battery_power
+        kw_decimals: 2
+        min_flow_rate: 0.75
+        max_flow_rate: 6
+        watt_threshold: 10
+        display_mode: bignumbers
+        clickable_entities: true
+        use_new_flow_rate_model: true
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 24px;
+              background: #0f172a;
+              border: 1px solid rgba(255,255,255,0.06);
+              box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            }
+
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Solar
+            secondary: "{{ states('sensor.atmozen_pv_power_kw') }} kW"
+            icon: mdi:solar-power
+            icon_color: amber
+            layout: vertical
+            card_mod:
+              style: |
+                ha-card { border-radius: 18px; background: #111827; color: #fff; }
+          - type: custom:mushroom-template-card
+            primary: Home
+            secondary: "{{ states('sensor.atmozen_home_power_kw') }} kW"
+            icon: mdi:home-lightning-bolt
+            icon_color: green
+            layout: vertical
+            card_mod:
+              style: |
+                ha-card { border-radius: 18px; background: #111827; color: #fff; }
+          - type: custom:mushroom-template-card
+            primary: Grid
+            secondary: "{{ states('sensor.atmozen_grid_power_kw') }} kW"
+            icon: mdi:transmission-tower
+            icon_color: >
+              {% set g = states('sensor.atmoce_gateway_grid_power') | float(0) %}
+              {{ 'red' if g > 20 else 'blue' if g < -20 else 'grey' }}
+            layout: vertical
+            card_mod:
+              style: |
+                ha-card { border-radius: 18px; background: #111827; color: #fff; }
+
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Self-use
+            secondary: "{{ states('sensor.atmozen_self_consumption_pct') }}%"
+            icon: mdi:leaf
+            icon_color: light-green
+            layout: vertical
+            card_mod:
+              style: |
+                ha-card { border-radius: 18px; background: #111827; color: #fff; }
+          - type: custom:mushroom-template-card
+            primary: PV today
+            secondary: "{{ states('sensor.atmozen_pv_daily') | round(1) }} kWh"
+            icon: mdi:chart-line
+            icon_color: orange
+            layout: vertical
+            card_mod:
+              style: |
+                ha-card { border-radius: 18px; background: #111827; color: #fff; }
+          - type: custom:mushroom-template-card
+            primary: Grid L1
+            secondary: "{{ states('sensor.atmoce_gateway_grid_voltage_a') }} V"
+            icon: mdi:flash
+            icon_color: yellow
+            layout: vertical
+            card_mod:
+              style: |
+                ha-card { border-radius: 18px; background: #111827; color: #fff; }
+
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Live power (24h)
+          show_states: false
+        graph_span: 24h
+        apex_config:
+          chart:
+            height: 260
+            background: transparent
+            toolbar:
+              show: false
+          stroke:
+            curve: smooth
+            width: 2
+          legend:
+            show: true
+          grid:
+            borderColor: rgba(255,255,255,0.08)
+          theme:
+            mode: dark
+        series:
+          - entity: sensor.atmoce_gateway_pv_power
+            name: Solar
+            color: "#f59e0b"
+            type: area
+            opacity: 0.25
+            group_by:
+              func: avg
+              duration: 5m
+          - entity: sensor.atmozen_home_power
+            name: Home
+            color: "#22c55e"
+            type: line
+            group_by:
+              func: avg
+              duration: 5m
+          - entity: sensor.atmoce_gateway_grid_power
+            name: Grid
+            color: "#60a5fa"
+            type: line
+            group_by:
+              func: avg
+              duration: 5m
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 20px;
+              background: #111827;
+              border: 1px solid rgba(255,255,255,0.06);
+            }
+
+      - type: glance
+        title: Today
+        show_name: true
+        show_state: true
+        columns: 3
+        entities:
+          - entity: sensor.atmozen_pv_daily
+            name: Solar
+          - entity: sensor.atmozen_grid_import_daily
+            name: Import
+          - entity: sensor.atmozen_grid_export_daily
+            name: Export
+
+  - title: Details
+    path: details
+    icon: mdi:chart-timeline-variant
+    theme: atmozen
+    cards:
+      - type: entities
+        title: Atmoce Gateway
+        show_header_toggle: false
+        entities:
+          - entity: sensor.atmoce_gateway_pv_power
+          - entity: sensor.atmoce_gateway_grid_power
+          - entity: sensor.atmozen_home_power
+          - entity: sensor.atmoce_gateway_grid_voltage_a
+          - entity: sensor.atmoce_gateway_pv_energy_total
+          - entity: sensor.atmoce_gateway_grid_import_energy_total
+          - entity: sensor.atmoce_gateway_grid_export_energy_total
+
+      - type: conditional
+        conditions:
+          - entity: sensor.indevolt_storage_battery_soc
+            state_not: unavailable
+        card:
+          type: entities
+          title: Indevolt Storage
+          entities:
+            - entity: sensor.indevolt_storage_battery_soc
+            - entity: sensor.indevolt_storage_battery_power
+            - entity: select.indevolt_storage_energy_mode
+            - entity: number.indevolt_storage_backup_soc
+
+      - type: markdown
+        content: |
+          ## Panels
+          **18 modules** on Atmoce gateway `192.168.1.8`
+
+          Battery view appears automatically when Indevolt is configured.
