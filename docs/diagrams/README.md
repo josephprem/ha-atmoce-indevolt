@@ -1,17 +1,13 @@
-# HEMS diagrams
+# Data collection diagram
 
-Simple architecture diagrams for **ha-atmoce-indevolt** (not official vendor artwork).
+How MC100, SF3000, and SMD1 meter data reach Home Assistant.
 
-GitHub renders **PNG** inline; **SVG** sources are linked for zoomable copies.
+GitHub renders **PNG** inline; **SVG** is linked for a zoomable copy.
 
-| Diagram | PNG | SVG | Shows |
-|---------|-----|-----|-------|
-| Site energy | [system-overview.png](system-overview.png) | [system-overview.svg](system-overview.svg) | Solar, grid, home, battery + meter roles |
-| Data collection | [data-flow.png](data-flow.png) | [data-flow.svg](data-flow.svg) | MC100, SF3000, SMD1 → HA integration |
-| Rollout | [phased-setup.png](phased-setup.png) | [phased-setup.svg](phased-setup.svg) | What to add in each phase |
-| Legend | [icons.png](icons.png) | [icons.svg](icons.svg) | Colour key |
+| PNG | SVG |
+|-----|-----|
+| [data-flow.png](data-flow.png) | [data-flow.svg](data-flow.svg) |
 
 ```markdown
-[![Site energy](diagrams/system-overview.png)](diagrams/system-overview.svg)
-[![Data collection](diagrams/data-flow.png)](diagrams/data-flow.svg)
+[![Data collection path](diagrams/data-flow.png)](diagrams/data-flow.svg)
 ```

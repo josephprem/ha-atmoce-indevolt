@@ -9,8 +9,6 @@ Home Assistant custom integration for a hybrid home energy management system (HE
 
 The integration talks to both vendors **locally** (no cloud required) and exposes unified sensors, controls, and HEMS metrics for automations and the Energy dashboard.
 
-[![Site energy and meters](docs/diagrams/system-overview.png)](docs/diagrams/system-overview.svg)
-
 [![Data collection path](docs/diagrams/data-flow.png)](docs/diagrams/data-flow.svg)
 
 ## Features
