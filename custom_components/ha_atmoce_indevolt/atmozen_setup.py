@@ -71,20 +71,41 @@ async def async_setup_atmozen(hass: HomeAssistant, entry: ConfigEntry) -> None:
     if hass.state == CoreState.running:
         await _install()
     else:
-        hass.bus.async_listen_once("homeassistant_started", _install)
+        hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _install)
 
 
 async def _async_register_theme(hass: HomeAssistant) -> None:
+    """Register the atmozen theme in frontend theme storage."""
+    if DATA_THEMES not in hass.data:
+        _LOGGER.debug("Frontend themes not ready; skip atmozen theme")
+        return
+
     theme_file = DASHBOARD_DIR / "atmozen_theme.yaml"
     if not theme_file.is_file():
         return
-    data = await hass.async_add_executor_job(ha_yaml.load_yaml, str(theme_file))
+
+    data = await hass.async_add_executor_job(load_yaml, str(theme_file))
     theme = data.get("atmozen") if isinstance(data, dict) else None
-    if theme:
-        async_register_theme(hass, "atmozen", theme)
+    if not theme:
+        return
+
+    hass.data[DATA_THEMES]["atmozen"] = theme
+    hass.bus.async_fire(EVENT_THEMES_UPDATED)
 
 
 async def _async_install_dashboard(hass: HomeAssistant) -> None:
+    from homeassistant.components.lovelace.const import (
+        CONF_ICON,
+        CONF_MODE,
+        CONF_SHOW_IN_SIDEBAR,
+        CONF_TITLE,
+        CONF_URL_PATH,
+        DATA_DASHBOARDS,
+        DOMAIN as LOVELACE_DOMAIN,
+        MODE_STORAGE,
+    )
+    from homeassistant.components.lovelace.dashboard import LovelaceStorage
+
     if LOVELACE_DOMAIN not in hass.data:
         _LOGGER.debug("Lovelace not loaded; skip dashboard install")
         return
@@ -94,7 +115,7 @@ async def _async_install_dashboard(hass: HomeAssistant) -> None:
     if not dashboard_file.is_file():
         return
 
-    config = await hass.async_add_executor_job(ha_yaml.load_yaml, str(dashboard_file))
+    config = await hass.async_add_executor_job(load_yaml, str(dashboard_file))
     if not isinstance(config, dict):
         _LOGGER.warning("Invalid Atmozen dashboard YAML")
         return
