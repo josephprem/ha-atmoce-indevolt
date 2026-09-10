@@ -5,6 +5,7 @@ Home Assistant custom integration for a hybrid home energy management system (HE
 - **Atmoce** PV ecosystem (18 microinverter panels via MG100 / MC100 gateway, Modbus TCP)
 - **Indevolt SF3000AC** AC-coupled storage inverter
 - **Indevolt SFA3600** extended battery pack(s)
+- **Solarman SMD1** LoRa smart meter (whole-home load via SF3000)
 
 The integration talks to both vendors **locally** (no cloud required) and exposes unified sensors, controls, and HEMS metrics for automations and the Energy dashboard.
 
@@ -27,6 +28,14 @@ The integration talks to both vendors **locally** (no cloud required) and expose
 1. Gateway model **MG100** or **MC100** with Modbus TCP enabled (default port `502`).
 2. Enable Modbus in the **Atmozen** app if your installer has not already done so.
 3. Gateway and Home Assistant on the same LAN.
+
+### Solarman SMD1 meter
+
+1. Pair the clamp meter to the **SF3000AC** in the Indevolt app (LoRa recommended).
+2. Enable **meter** load mode for zero-export / self-consumption.
+3. HA reads `meter_power` through the Indevolt integration — no separate Solarman integration.
+
+See [`docs/smd1-meter.md`](docs/smd1-meter.md).
 
 ### Indevolt SF3000AC
 

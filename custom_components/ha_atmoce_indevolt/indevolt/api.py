@@ -26,7 +26,9 @@ from ..const import (
     INDEVOLT_POINT_GRID_VOLTAGE,
     INDEVOLT_POINT_INVERTER_INPUT_LIMIT,
     INDEVOLT_POINT_MAX_AC_OUTPUT,
-    INDEVOLT_POINT_METER_POWER,
+    INDEVOLT_POINT_METER_CONNECTION,
+    INDEVOLT_POINT_METER_POWER_LEGACY,
+    INDEVOLT_POINT_METER_POWER_SF,
     INDEVOLT_POINT_PACK_SOC,
     INDEVOLT_POINT_PACK_TEMP,
     INDEVOLT_POINT_RATED_CAPACITY,
@@ -63,7 +65,9 @@ READ_POINTS: list[int] = sorted(
         INDEVOLT_POINT_BATTERY_SOC,
         INDEVOLT_POINT_GRID_VOLTAGE,
         INDEVOLT_POINT_GRID_FREQUENCY,
-        INDEVOLT_POINT_METER_POWER,
+        INDEVOLT_POINT_METER_CONNECTION,
+        INDEVOLT_POINT_METER_POWER_SF,
+        INDEVOLT_POINT_METER_POWER_LEGACY,
         INDEVOLT_POINT_BYPASS_POWER,
         *INDEVOLT_POINT_PACK_SOC.values(),
         *INDEVOLT_POINT_PACK_TEMP.values(),
@@ -119,7 +123,12 @@ class IndevoltApiClient:
             "battery_soc": raw.get(str(INDEVOLT_POINT_BATTERY_SOC)),
             "grid_voltage_v": raw.get(str(INDEVOLT_POINT_GRID_VOLTAGE)),
             "grid_frequency_hz": raw.get(str(INDEVOLT_POINT_GRID_FREQUENCY)),
-            "meter_power_w": raw.get(str(INDEVOLT_POINT_METER_POWER)),
+            "meter_connection": raw.get(str(INDEVOLT_POINT_METER_CONNECTION)),
+            "meter_power_w": (
+                raw.get(str(INDEVOLT_POINT_METER_POWER_SF))
+                if raw.get(str(INDEVOLT_POINT_METER_POWER_SF)) is not None
+                else raw.get(str(INDEVOLT_POINT_METER_POWER_LEGACY))
+            ),
             "bypass_power_w": raw.get(str(INDEVOLT_POINT_BYPASS_POWER)),
         }
         for pack_index, point in INDEVOLT_POINT_PACK_SOC.items():

@@ -218,9 +218,18 @@ views:
             - entity: select.indevolt_storage_energy_mode
             - entity: number.indevolt_storage_backup_soc
 
+      - type: entities
+        title: Solarman SMD1 (via SF3000)
+        show_header_toggle: false
+        entities:
+          - entity: sensor.indevolt_storage_meter_power
+            name: Home load (meter)
+          - entity: sensor.indevolt_storage_battery_soc
+            name: Battery SOC
+
       - type: markdown
         content: |
-          ## Panels
-          **18 modules** on Atmoce gateway `192.168.1.8`
+          ## Site
+          **18× Atmoce** on gateway `192.168.1.8` · **SF3000AC + SFA3600** · **SMD1 LoRa**
 
-          Battery view appears automatically when Indevolt is configured.
+          Home power uses the SMD1 meter when Indevolt is configured; otherwise it is estimated from Atmoce.

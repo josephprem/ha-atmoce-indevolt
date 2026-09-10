@@ -8,8 +8,9 @@
 | Atmoce MG100 / MC100 gateway | PV aggregation, grid metering, Modbus API |
 | Indevolt SF3000AC | AC-coupled hybrid inverter / storage controller |
 | Indevolt SFA3600 | Extended LiFePO₄ battery pack |
+| [Solarman SMD1](https://fr.indevolt.com/products/solarman-lora-compteur-electrique-intelligent-smd1) (LoRa) | Whole-home consumption meter → SF3000AC |
 
-The SF3000AC is the network endpoint for Home Assistant. SFA3600 packs appear as `pack_1_soc`, `pack_2_soc`, etc.
+The SF3000AC is the network endpoint for Home Assistant. SFA3600 packs appear as `pack_1_soc`, `pack_2_soc`, etc. The SMD1 does **not** get its own HA integration — meter data arrives via the SF3000 OpenData API (`meter_power`). See [`docs/smd1-meter.md`](smd1-meter.md).
 
 ## Step 1 — Reserve static IPs
 

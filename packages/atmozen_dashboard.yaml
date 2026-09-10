@@ -16,9 +16,14 @@ template:
         state_class: measurement
         icon: mdi:home-lightning-bolt
         state: >
-          {% set pv = states('sensor.atmoce_gateway_pv_power') | float(0) %}
-          {% set grid = states('sensor.atmoce_gateway_grid_power') | float(0) %}
-          {{ max(pv + grid, 0) | round(0) }}
+          {% set meter = states('sensor.indevolt_storage_meter_power') %}
+          {% if meter not in ['unknown', 'unavailable', 'none'] %}
+            {{ max(meter | float(0), 0) | round(0) }}
+          {% else %}
+            {% set pv = states('sensor.atmoce_gateway_pv_power') | float(0) %}
+            {% set grid = states('sensor.atmoce_gateway_grid_power') | float(0) %}
+            {{ max(pv + grid, 0) | round(0) }}
+          {% endif %}
 
       - name: "Atmozen PV Power kW"
         unique_id: atmozen_pv_power_kw
