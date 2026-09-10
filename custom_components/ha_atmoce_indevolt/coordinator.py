@@ -50,6 +50,7 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
         self.microinverter_count = microinverter_count
 
     async def _async_update_data(self) -> HemsData:
+        previous = self.data or HemsData()
         data = HemsData()
         errors: list[str] = []
 
@@ -58,12 +59,14 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
                 data.atmoce = await self.atmoce.async_get_snapshot()
             except Exception as err:  # noqa: BLE001 - surface upstream device errors
                 errors.append(f"Atmoce: {err}")
+                data.atmoce = previous.atmoce
 
         if self.indevolt is not None:
             try:
                 data.indevolt = await self.indevolt.async_get_snapshot()
             except Exception as err:  # noqa: BLE001 - surface upstream device errors
                 errors.append(f"Indevolt: {err}")
+                data.indevolt = previous.indevolt
 
         if data.atmoce is None and data.indevolt is None:
             raise UpdateFailed("; ".join(errors) or "No device data available")
@@ -110,11 +113,19 @@ class HemsCoordinator(DataUpdateCoordinator[HemsData]):
                     max((pv_power - max(grid_power, 0.0)) / pv_power * 100.0, 0.0), 100.0
                 )
 
+        grid_import_power = None
+        grid_export_power = None
+        if grid_power is not None:
+            grid_import_power = max(float(grid_power), 0.0)
+            grid_export_power = max(-float(grid_power), 0.0)
+
         return {
             "panel_count": self.panel_count,
             "microinverter_count": self.microinverter_count,
             "pv_power_w": pv_power,
             "grid_power_w": grid_power,
+            "grid_import_power_w": grid_import_power,
+            "grid_export_power_w": grid_export_power,
             "battery_power_w": battery_power,
             "meter_power_w": meter_power,
             "site_consumption_w": site_consumption,

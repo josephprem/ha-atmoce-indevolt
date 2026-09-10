@@ -4,24 +4,9 @@ A mobile-friendly Home Assistant dashboard: dark theme, energy flow, live kW chi
 
 [![Data flow](diagrams/data-flow.png)](diagrams/data-flow.svg)
 
-## Automatic install (v0.2.0+)
+## Automatic install (disabled)
 
-When you add **Atmoce + Indevolt HEMS**, the integration automatically:
-
-| Installed for you | Details |
-|-------------------|---------|
-| **Atmozen dashboard** | Sidebar entry **Atmozen** at `/ha-atmoce-indevolt` |
-| **atmozen theme** | Dark/light theme used by the dashboard |
-| **Helper sensors** | `sensor.atmozen_home_power`, `sensor.atmozen_pv_daily`, etc. |
-
-No manual copy of `packages/`, `dashboards/`, or `themes/` into `/config` is required.
-
-After adding the integration:
-
-1. **Restart Home Assistant** once (after updating to v0.2.0).
-2. Open **Atmozen** in the sidebar.
-
-The dashboard is created in **storage mode** (editable in the HA UI).
+Automatic Atmozen dashboard install is **disabled from v0.2.7** while core entity support is stabilised. Use the manual YAML path below if you want the Lovelace dashboard later.
 
 ---
 

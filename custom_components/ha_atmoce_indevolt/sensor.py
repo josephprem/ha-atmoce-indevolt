@@ -25,7 +25,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, INDEVOLT_POINT_PACK_SOC
 from .coordinator import HemsCoordinator, HemsData
-from .atmozen_setup import async_add_atmozen_entities
 from .entity import AtmoceEntity, HemsEntity, IndevoltEntity
 
 
@@ -142,6 +141,24 @@ ATMOCE_SENSORS: tuple[HemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    HemsSensorDescription(
+        key="grid_import_power",
+        translation_key="grid_import_power",
+        source="computed",
+        value_key="grid_import_power_w",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    HemsSensorDescription(
+        key="grid_export_power",
+        translation_key="grid_export_power",
+        source="computed",
+        value_key="grid_export_power_w",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
 )
 
@@ -321,7 +338,16 @@ class _BaseDescriptionSensor(SensorEntity):
 
     @property
     def available(self) -> bool:
-        return self.coordinator.last_update_success
+        if self.coordinator.data is None:
+            return False
+        source = self.entity_description.source
+        if source == "atmoce":
+            return self.coordinator.data.atmoce is not None
+        if source == "indevolt":
+            return self.coordinator.data.indevolt is not None
+        if source == "computed":
+            return self.coordinator.data.atmoce is not None
+        return self.coordinator.data.atmoce is not None and self.coordinator.data.indevolt is not None
 
     def _read_value(self, data: HemsData) -> Any:
         if self.entity_description.source == "atmoce":
@@ -332,6 +358,8 @@ class _BaseDescriptionSensor(SensorEntity):
             if data.indevolt is None:
                 return None
             return data.indevolt.get(self.entity_description.value_key)
+        if self.entity_description.source == "computed":
+            return data.computed.get(self.entity_description.value_key)
         return data.computed.get(self.entity_description.value_key)
 
 
@@ -450,4 +478,3 @@ async def async_setup_entry(
         )
 
     async_add_entities(entities)
-    await async_add_atmozen_entities(hass, entry.entry_id, async_add_entities)
