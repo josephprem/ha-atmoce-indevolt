@@ -149,7 +149,7 @@ class AtmoceModbusClient:
     async def _read_holding(self, register: int, count: int) -> list[int]:
         assert self._client is not None
         response = await self._client.read_holding_registers(
-            address=register, count=count, slave=1
+            address=register, count=count, device_id=1
         )
         if response.isError():
             raise OSError(

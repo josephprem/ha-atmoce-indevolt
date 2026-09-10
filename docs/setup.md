@@ -15,7 +15,7 @@ The SF3000AC is the network endpoint for Home Assistant. SFA3600 packs appear as
 
 Give stable DHCP reservations to:
 
-- Atmoce gateway (example `192.168.1.50`)
+- Atmoce gateway (`192.168.1.8`)
 - Indevolt SF3000AC (example `192.168.1.51`)
 
 ## Step 2 — Enable Atmoce Modbus
@@ -26,7 +26,7 @@ Give stable DHCP reservations to:
 4. Verify port `502` from a workstation:
 
 ```bash
-nc -zv 192.168.1.50 502
+nc -zv 192.168.1.8 502
 ```
 
 ## Step 3 — Enable Indevolt local API
