@@ -6,30 +6,25 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from homeassistant.components.frontend import async_register_theme
-from homeassistant.components.lovelace.const import (
-    CONF_ICON,
-    CONF_MODE,
-    CONF_SHOW_IN_SIDEBAR,
-    CONF_TITLE,
-    CONF_URL_PATH,
-    DATA_DASHBOARDS,
-    DOMAIN as LOVELACE_DOMAIN,
-    MODE_STORAGE,
-)
-from homeassistant.components.lovelace.dashboard import LovelaceStorage
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
-from homeassistant.config_entries import ConfigEntry
 from datetime import timedelta
 
-from homeassistant.const import PERCENTAGE, UnitOfEnergy, UnitOfPower
+from homeassistant.components.frontend import DATA_THEMES
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import (
+    EVENT_HOMEASSISTANT_STARTED,
+    EVENT_THEMES_UPDATED,
+    PERCENTAGE,
+    UnitOfEnergy,
+    UnitOfPower,
+)
 from homeassistant.core import CoreState, Event, HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_point_in_time, async_track_state_change_event
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
-from homeassistant.util import yaml as ha_yaml
+from homeassistant.util.yaml.loader import load_yaml
 
 from .const import DOMAIN, HEMS_DEVICE
 
