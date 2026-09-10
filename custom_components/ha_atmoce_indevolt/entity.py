@@ -36,9 +36,9 @@ class AtmoceEntity(HemsEntity):
         host = self.coordinator.atmoce._host if self.coordinator.atmoce else "unknown"
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry_id, ATMOCE_DEVICE)},
-            name="Atmoce MC100 Combiner",
+            name="Atmoce Gateway",
             manufacturer="Atmoce",
-            model="MC100 Combiner / MG100",
+            model="MC100 Combiner",
             configuration_url=f"http://{host}",
         )
 
