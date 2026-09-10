@@ -63,7 +63,7 @@ See [`energy-dashboard.md`](energy-dashboard.md) if sensors are missing.
 
 | Problem | Fix |
 |---------|-----|
-| No **Atmozen** in sidebar | Update integration to v0.2.0+, restart HA, reload integration |
+| No **Atmozen** in sidebar | Update to v0.2.3+, restart HA. Or run service **ha_atmoce_indevolt.install_dashboard** from Developer tools → Actions |
 | *Custom element doesn't exist* | Install HACS cards above, restart HA |
 | Empty / unavailable cards | Fix Atmoce Modbus — see integration logs |
 | Duplicate `atmozen_*` sensors | Remove manual `packages/atmozen_dashboard.yaml` from `configuration.yaml` |

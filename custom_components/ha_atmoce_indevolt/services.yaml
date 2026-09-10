@@ -51,3 +51,7 @@ discharge_battery:
           max: 100
           step: 1
           unit_of_measurement: "%"
+
+install_dashboard:
+  name: Install Atmozen dashboard
+  description: Create or refresh the Atmozen Lovelace dashboard and sidebar entry.

@@ -26,7 +26,7 @@ from .const import (
     PLATFORMS,
 )
 from .atmoce import AtmoceModbusClient
-from .atmozen_setup import async_setup_atmozen
+from .atmozen_setup import async_force_install_atmozen, async_setup_atmozen
 from .coordinator import HemsCoordinator
 from .indevolt import IndevoltApiClient
 
@@ -97,7 +97,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 @callback
 def _register_services(hass: HomeAssistant) -> None:
-    if hass.services.has_service(DOMAIN, "charge_battery"):
+    if hass.services.has_service(DOMAIN, "install_dashboard"):
         return
 
     async def charge_battery(call: ServiceCall) -> None:
@@ -128,6 +128,13 @@ def _register_services(hass: HomeAssistant) -> None:
             }
         ),
     )
+
+    async def install_dashboard(_call: ServiceCall) -> None:
+        ok = await async_force_install_atmozen(hass)
+        if not ok:
+            _LOGGER.warning("Atmozen dashboard install did not complete; check logs")
+
+    hass.services.async_register(DOMAIN, "install_dashboard", install_dashboard)
 
 
 async def _run_battery_action(hass: HomeAssistant, call: ServiceCall, charging: bool) -> None:

@@ -21,7 +21,11 @@ from homeassistant.const import (
 from homeassistant.core import CoreState, Event, HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.event import async_track_point_in_time, async_track_state_change_event
+from homeassistant.helpers.event import (
+    async_call_later,
+    async_track_point_in_time,
+    async_track_state_change_event,
+)
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
 from homeassistant.util.yaml.loader import load_yaml
@@ -33,6 +37,9 @@ _LOGGER = logging.getLogger(__name__)
 DASHBOARD_URL_PATH = "ha-atmoce-indevolt"
 DASHBOARD_DIR = Path(__file__).parent / "dashboard"
 DATA_ATMOZEN_INSTALLED = "atmozen_installed"
+DATA_ATMOZEN_INSTALL_ATTEMPTS = "atmozen_install_attempts"
+MAX_INSTALL_ATTEMPTS = 12
+INSTALL_RETRY_DELAY = timedelta(seconds=30)
 
 SOURCE_PV_POWER = "sensor.atmoce_gateway_pv_power"
 SOURCE_GRID_POWER = "sensor.atmoce_gateway_grid_power"
@@ -54,19 +61,63 @@ def _float_state(hass: HomeAssistant, entity_id: str) -> float | None:
 
 async def async_setup_atmozen(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Register theme and create the storage-mode Lovelace dashboard once."""
+    await _schedule_atmozen_install(hass)
 
+
+async def async_force_install_atmozen(hass: HomeAssistant) -> bool:
+    """Re-run theme + dashboard install (service / manual recovery)."""
+    domain_store = hass.data.setdefault(DOMAIN, {})
+    domain_store.pop(DATA_ATMOZEN_INSTALLED, None)
+    domain_store[DATA_ATMOZEN_INSTALL_ATTEMPTS] = 0
+    return await _run_atmozen_install(hass)
+
+
+async def _schedule_atmozen_install(hass: HomeAssistant) -> None:
     async def _install(_event: Event | None = None) -> None:
-        if hass.data.get(DOMAIN, {}).get(DATA_ATMOZEN_INSTALLED):
-            return
-        await _async_register_theme(hass)
-        await _async_install_dashboard(hass)
-        hass.data.setdefault(DOMAIN, {})[DATA_ATMOZEN_INSTALLED] = True
-        _LOGGER.info("Atmozen dashboard installed at /%s", DASHBOARD_URL_PATH)
+        await _run_atmozen_install(hass)
 
     if hass.state == CoreState.running:
         await _install()
     else:
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _install)
+
+
+async def _run_atmozen_install(hass: HomeAssistant) -> bool:
+    """Install theme and dashboard; retry until Lovelace is ready."""
+    domain_store = hass.data.setdefault(DOMAIN, {})
+    if domain_store.get(DATA_ATMOZEN_INSTALLED):
+        return True
+
+    attempts = int(domain_store.get(DATA_ATMOZEN_INSTALL_ATTEMPTS, 0)) + 1
+    domain_store[DATA_ATMOZEN_INSTALL_ATTEMPTS] = attempts
+
+    await _async_register_theme(hass)
+    if await _async_install_dashboard(hass):
+        domain_store[DATA_ATMOZEN_INSTALLED] = True
+        _LOGGER.info("Atmozen dashboard installed at /%s", DASHBOARD_URL_PATH)
+        return True
+
+    if attempts < MAX_INSTALL_ATTEMPTS:
+        _LOGGER.info(
+            "Atmozen dashboard install deferred (attempt %s/%s), retrying in %ss",
+            attempts,
+            MAX_INSTALL_ATTEMPTS,
+            INSTALL_RETRY_DELAY.total_seconds(),
+        )
+        @callback
+        def _retry(_now: Any) -> None:
+            hass.async_create_task(_run_atmozen_install(hass))
+
+        async_call_later(hass, INSTALL_RETRY_DELAY.total_seconds(), _retry)
+        return False
+
+    _LOGGER.error(
+        "Atmozen dashboard could not be installed after %s attempts. "
+        "Restart Home Assistant or call service %s.install_dashboard",
+        MAX_INSTALL_ATTEMPTS,
+        DOMAIN,
+    )
+    return False
 
 
 async def _async_register_theme(hass: HomeAssistant) -> None:
@@ -88,57 +139,101 @@ async def _async_register_theme(hass: HomeAssistant) -> None:
     hass.bus.async_fire(EVENT_THEMES_UPDATED)
 
 
-async def _async_install_dashboard(hass: HomeAssistant) -> None:
+def _register_lovelace_panel(hass: HomeAssistant, dashboard_config: dict[str, Any]) -> None:
+    """Register the sidebar panel for a storage-mode dashboard."""
+    from homeassistant.components import frontend
     from homeassistant.components.lovelace.const import (
         CONF_ICON,
-        CONF_MODE,
+        CONF_REQUIRE_ADMIN,
         CONF_SHOW_IN_SIDEBAR,
         CONF_TITLE,
         CONF_URL_PATH,
-        DATA_DASHBOARDS,
+        DEFAULT_ICON,
         DOMAIN as LOVELACE_DOMAIN,
         MODE_STORAGE,
     )
-    from homeassistant.components.lovelace.dashboard import LovelaceStorage
 
-    if LOVELACE_DOMAIN not in hass.data:
-        _LOGGER.debug("Lovelace not loaded; skip dashboard install")
-        return
+    url_path = dashboard_config[CONF_URL_PATH]
+    frontend.async_register_built_in_panel(
+        hass,
+        LOVELACE_DOMAIN,
+        frontend_url_path=url_path,
+        require_admin=dashboard_config.get(CONF_REQUIRE_ADMIN, False),
+        show_in_sidebar=dashboard_config.get(CONF_SHOW_IN_SIDEBAR, True),
+        sidebar_title=dashboard_config[CONF_TITLE],
+        sidebar_icon=dashboard_config.get(CONF_ICON, DEFAULT_ICON),
+        config={"mode": MODE_STORAGE},
+        update=frontend.async_panel_exists(hass, url_path),
+    )
 
-    dashboards = hass.data[LOVELACE_DOMAIN][DATA_DASHBOARDS]
+
+async def _async_install_dashboard(hass: HomeAssistant) -> bool:
+    """Create the Atmozen storage dashboard and register it in the sidebar."""
+    from homeassistant.components import frontend
+    from homeassistant.components.lovelace.const import (
+        CONF_ICON,
+        CONF_MODE,
+        CONF_REQUIRE_ADMIN,
+        CONF_SHOW_IN_SIDEBAR,
+        CONF_TITLE,
+        CONF_URL_PATH,
+        LOVELACE_DATA,
+        MODE_STORAGE,
+    )
+    from homeassistant.components.lovelace.dashboard import DashboardsCollection, LovelaceStorage
+
+    if LOVELACE_DATA not in hass.data:
+        _LOGGER.warning("Lovelace not ready yet; Atmozen dashboard install will retry")
+        return False
+
     dashboard_file = DASHBOARD_DIR / "atmozen.yaml"
     if not dashboard_file.is_file():
-        return
+        _LOGGER.error("Atmozen dashboard file missing: %s", dashboard_file)
+        return False
 
     config = await hass.async_add_executor_job(load_yaml, str(dashboard_file))
     if not isinstance(config, dict):
         _LOGGER.warning("Invalid Atmozen dashboard YAML")
-        return
+        return False
 
-    dashboard_id: str | None = None
+    dashboards = DashboardsCollection(hass)
+    await dashboards.async_load()
+
+    dashboard_item: dict[str, Any] | None = None
     for item in dashboards.async_items():
         if item.get(CONF_URL_PATH) == DASHBOARD_URL_PATH:
-            dashboard_id = item["id"]
+            dashboard_item = item
             break
 
-    if dashboard_id is None:
-        created = await dashboards.async_create_item(
-            {
-                CONF_TITLE: "Atmozen",
-                CONF_ICON: "mdi:solar-power-variant",
-                CONF_URL_PATH: DASHBOARD_URL_PATH,
-                CONF_SHOW_IN_SIDEBAR: True,
-                "require_admin": False,
-                CONF_MODE: MODE_STORAGE,
-            }
-        )
-        dashboard_id = created["id"]
+    if dashboard_item is None:
+        try:
+            dashboard_item = await dashboards.async_create_item(
+                {
+                    CONF_TITLE: "Atmozen",
+                    CONF_ICON: "mdi:solar-power-variant",
+                    CONF_URL_PATH: DASHBOARD_URL_PATH,
+                    CONF_SHOW_IN_SIDEBAR: True,
+                    CONF_REQUIRE_ADMIN: False,
+                    CONF_MODE: MODE_STORAGE,
+                }
+            )
+        except Exception:
+            _LOGGER.exception("Failed to create Atmozen dashboard entry")
+            return False
+
+    lovelace_data = hass.data[LOVELACE_DATA]
+    if DASHBOARD_URL_PATH not in lovelace_data.dashboards:
+        lovelace_data.dashboards[DASHBOARD_URL_PATH] = LovelaceStorage(hass, dashboard_item)
+
+    if not frontend.async_panel_exists(hass, DASHBOARD_URL_PATH):
+        _register_lovelace_panel(hass, dashboard_item)
 
     storage = LovelaceStorage(
-        hass, {CONF_URL_PATH: DASHBOARD_URL_PATH, "id": dashboard_id}
+        hass, {CONF_URL_PATH: DASHBOARD_URL_PATH, "id": dashboard_item["id"]}
     )
-    await storage.async_load()
+    await storage.async_load(False)
     await storage.async_save(config)
+    return True
 
 
 class _AtmozenBase(SensorEntity):
