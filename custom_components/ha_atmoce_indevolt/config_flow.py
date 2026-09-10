@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -29,6 +30,8 @@ from .const import (
 )
 from .atmoce import AtmoceModbusClient
 from .indevolt import IndevoltApiClient
+
+_LOGGER = logging.getLogger(__name__)
 
 STEP_USER_SCHEMA = vol.Schema(
     {
@@ -87,18 +90,30 @@ class HemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             atmoce_host,
                             user_input[CONF_ATMOCE_PORT],
                         )
-                    except Exception:  # noqa: BLE001 - show user-friendly validation error
-                        errors[CONF_ATMOCE_HOST] = "cannot_connect"
+                    except Exception as err:  # noqa: BLE001 - allow setup; sensors retry polling
+                        _LOGGER.warning(
+                            "Atmoce Modbus test failed for %s:%s (%s); "
+                            "continuing setup — sensors will show unavailable until connected",
+                            atmoce_host,
+                            user_input[CONF_ATMOCE_PORT],
+                            err,
+                        )
 
-                if indevolt_host and CONF_ATMOCE_HOST not in errors:
+                if indevolt_host:
                     try:
                         await _validate_indevolt(
                             self.hass,
                             indevolt_host,
                             user_input[CONF_INDEVOLT_PORT],
                         )
-                    except Exception:  # noqa: BLE001 - show user-friendly validation error
-                        errors[CONF_INDEVOLT_HOST] = "cannot_connect"
+                    except Exception as err:  # noqa: BLE001 - allow setup; sensors retry polling
+                        _LOGGER.warning(
+                            "Indevolt API test failed for %s:%s (%s); "
+                            "continuing setup — sensors will show unavailable until connected",
+                            indevolt_host,
+                            user_input[CONF_INDEVOLT_PORT],
+                            err,
+                        )
 
             if not errors:
                 title = "Atmoce + Indevolt HEMS"

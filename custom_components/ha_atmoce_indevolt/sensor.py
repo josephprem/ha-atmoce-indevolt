@@ -335,6 +335,8 @@ class _BaseDescriptionSensor(SensorEntity):
 
 
 class AtmoceSensor(AtmoceEntity, _BaseDescriptionSensor):
+    """Atmoce gateway sensor with stable entity IDs (sensor.atmoce_gateway_*)."""
+
     def __init__(
         self,
         coordinator: HemsCoordinator,
@@ -343,6 +345,11 @@ class AtmoceSensor(AtmoceEntity, _BaseDescriptionSensor):
     ) -> None:
         AtmoceEntity.__init__(self, coordinator, entry_id)
         _BaseDescriptionSensor.__init__(self, coordinator, entry_id, description)
+        self._attr_has_entity_name = False
+
+    @property
+    def suggested_object_id(self) -> str:
+        return f"atmoce_gateway_{self.entity_description.key}"
 
     @property
     def native_value(self) -> Any:
