@@ -1,8 +1,8 @@
 # Setup guide
 
-![System overview](diagrams/system-overview.svg)
+[![System overview](diagrams/system-overview.png)](diagrams/system-overview.svg)
 
-![Rollout phases](diagrams/phased-setup.svg)
+[![Rollout phases](diagrams/phased-setup.png)](diagrams/phased-setup.svg)
 
 ## Your hardware layout
 

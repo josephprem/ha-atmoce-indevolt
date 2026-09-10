@@ -20,9 +20,9 @@ The SMD1 is **not a standalone HA device**. Per Indevolt:
 - Also supports Wi‑Fi and Bluetooth for commissioning
 - Measures **real household load** so the SF3000 can do zero-export / self-consumption
 
-![System overview](diagrams/system-overview.svg)
+[![System overview](diagrams/system-overview.png)](diagrams/system-overview.svg)
 
-![Data flow](diagrams/data-flow.svg)
+[![Data flow](diagrams/data-flow.png)](diagrams/data-flow.svg)
 
 ```text
 Atmoce PV ──► grid / home

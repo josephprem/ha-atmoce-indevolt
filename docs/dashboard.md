@@ -2,7 +2,7 @@
 
 A mobile-friendly Home Assistant dashboard inspired by the **Atmozen** app: dark theme, central energy flow, live kW chips, and daily production stats.
 
-![Data flow](diagrams/data-flow.svg)
+[![Data flow](diagrams/data-flow.png)](diagrams/data-flow.svg)
 
 ## 1. HACS cards (recommended)
 

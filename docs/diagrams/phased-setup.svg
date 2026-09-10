@@ -1,51 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" role="img" aria-label="Phased HEMS setup">
-  <defs>
-    <style>
-      .t { font: 700 22px Arial, sans-serif; fill: #f9fafb; }
-      .h { font: 600 14px Arial, sans-serif; fill: #f3f4f6; }
-      .p { font: 11px Arial, sans-serif; fill: #9ca3af; }
-      .on { fill: #14532d; stroke: #22c55e; }
-      .next { fill: #1f2937; stroke: #64748b; stroke-dasharray: 6 4; }
-    </style>
-  </defs>
-  <rect width="1000" height="360" rx="18" fill="#0f172a"/>
-  <text x="36" y="40" class="t">Rollout phases</text>
-
-  <g transform="translate(36,80)">
-    <rect width="280" height="240" rx="16" class="on" stroke-width="2"/>
-    <text x="20" y="36" class="h">Phase 1  Now </text>
-    <text x="20" y="62" class="p">Atmoce 18 panels + MG100</text>
-    <text x="20" y="82" class="p">IP 192.168.1.8 · Modbus</text>
-    <text x="20" y="110" class="p">Home load: estimated</text>
-    <text x="20" y="130" class="p">PV + grid CT</text>
-    <text x="20" y="160" class="p">Atmozen dashboard (partial)</text>
-  </g>
-
-  <g transform="translate(360,80)">
-    <rect width="280" height="240" rx="16" class="next" stroke-width="2"/>
-    <text x="20" y="36" class="h">Phase 2  Battery</text>
-    <text x="20" y="62" class="p">SF3000AC + SFA3600</text>
-    <text x="20" y="82" class="p">Indevolt OpenData in HA</text>
-    <text x="20" y="110" class="p">Charge / discharge control</text>
-    <text x="20" y="130" class="p">Battery on flow diagram</text>
-    <text x="20" y="160" class="p">HEMS automations enabled</text>
-  </g>
-
-  <g transform="translate(684,80)">
-    <rect width="280" height="240" rx="16" class="next" stroke-width="2"/>
-    <text x="20" y="36" class="h">Phase 3  SMD1 meter</text>
-    <text x="20" y="62" class="p">Solarman LoRa clamp meter</text>
-    <text x="20" y="82" class="p">Pair to SF3000 in app</text>
-    <text x="20" y="110" class="p">Home load: measured</text>
-    <text x="20" y="130" class="p">meter_power authoritative</text>
-    <text x="20" y="160" class="p">Zero-export / surplus tuning</text>
-  </g>
-
-  <path d="M316 200 H360" stroke="#64748b" stroke-width="2" marker-end="url(#m)"/>
-  <path d="M640 200 H684" stroke="#64748b" stroke-width="2"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="360" viewBox="0 0 1000 360">
   <defs>
     <marker id="m" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
       <path d="M0,0 L6,3 L0,6 Z" fill="#64748b"/>
     </marker>
   </defs>
+  <rect width="1000" height="360" rx="18" fill="#0f172a"/>
+  <text x="36" y="40" fill="#f9fafb" font-family="Arial,sans-serif" font-size="22" font-weight="700">Rollout phases</text>
+
+  <g transform="translate(36,80)">
+    <rect width="280" height="240" rx="16" fill="#14532d" stroke="#22c55e" stroke-width="2"/>
+    <text x="20" y="36" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="14" font-weight="600">Phase 1 - Now (active)</text>
+    <text x="20" y="62" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Atmoce 18 panels + MG100</text>
+    <text x="20" y="82" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">IP 192.168.1.8 Modbus</text>
+    <text x="20" y="110" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Home load: estimated</text>
+    <text x="20" y="130" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">From PV + grid CT</text>
+  </g>
+  <g transform="translate(360,80)">
+    <rect width="280" height="240" rx="16" fill="#1f2937" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="20" y="36" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="14" font-weight="600">Phase 2 - Battery</text>
+    <text x="20" y="62" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">SF3000AC + SFA3600</text>
+    <text x="20" y="82" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Indevolt OpenData in HA</text>
+    <text x="20" y="110" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Charge and discharge control</text>
+  </g>
+  <g transform="translate(684,80)">
+    <rect width="280" height="240" rx="16" fill="#1f2937" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="20" y="36" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="14" font-weight="600">Phase 3 - SMD1 meter</text>
+    <text x="20" y="62" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Solarman LoRa clamp meter</text>
+    <text x="20" y="82" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Pair to SF3000 in app</text>
+    <text x="20" y="110" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Home load: measured</text>
+  </g>
+
+  <line x1="316" y1="200" x2="360" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#m)"/>
+  <line x1="640" y1="200" x2="684" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#m)"/>
 </svg>
