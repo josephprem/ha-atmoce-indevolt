@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="520" viewBox="0 0 1100 520">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#4ade80"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#fbbf24"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="520" rx="16" fill="#0f172a"/>
+  <text x="40" y="44" fill="#f8fafc" font-family="system-ui,Arial,sans-serif" font-size="24" font-weight="700">Home energy system overview</text>
+  <text x="40" y="72" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="14">Atmoce PV + Indevolt storage + dual metering (SMD1 grid / Shelly emulator PV)</text>
+
+  <!-- PV array -->
+  <g transform="translate(40,110)">
+    <rect width="180" height="90" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+    <text x="90" y="32" text-anchor="middle" fill="#fef3c7" font-family="system-ui,Arial,sans-serif" font-size="13" font-weight="600">18× 500 W panels</text>
+    <text x="90" y="52" text-anchor="middle" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="11">9× 1000 W microinverters</text>
+    <text x="90" y="72" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="10">9 kWp nameplate</text>
+  </g>
+
+  <!-- MC100 -->
+  <g transform="translate(280,110)">
+    <rect width="200" height="90" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+    <text x="100" y="32" text-anchor="middle" fill="#fef3c7" font-family="system-ui,Arial,sans-serif" font-size="13" font-weight="600">Atmoce MC100</text>
+    <text x="100" y="52" text-anchor="middle" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="11">192.168.1.8</text>
+    <text x="100" y="72" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="10">Modbus TCP :502</text>
+  </g>
+
+  <!-- Grid -->
+  <g transform="translate(540,40)">
+    <rect width="140" height="60" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    <text x="70" y="36" text-anchor="middle" fill="#e2e8f0" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Utility grid</text>
+  </g>
+
+  <!-- Home load -->
+  <g transform="translate(540,250)">
+    <rect width="140" height="60" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    <text x="70" y="36" text-anchor="middle" fill="#e2e8f0" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Home load</text>
+  </g>
+
+  <!-- SF3000 -->
+  <g transform="translate(540,130)">
+    <rect width="200" height="90" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="100" y="32" text-anchor="middle" fill="#e0f2fe" font-family="system-ui,Arial,sans-serif" font-size="13" font-weight="600">Indevolt SF3000AC</text>
+    <text x="100" y="52" text-anchor="middle" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="11">HTTP OpenData :8080</text>
+    <text x="100" y="72" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="10">+ SFA3600 battery pack</text>
+  </g>
+
+  <!-- SMD1 -->
+  <g transform="translate(780,250)">
+    <rect width="160" height="70" rx="10" fill="#1e293b" stroke="#a78bfa" stroke-width="2"/>
+    <text x="80" y="30" text-anchor="middle" fill="#ede9fe" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Solarman SMD1</text>
+    <text x="80" y="50" text-anchor="middle" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="10">Grid meter · LoRa</text>
+  </g>
+
+  <!-- Shelly emulator -->
+  <g transform="translate(780,110)">
+    <rect width="200" height="90" rx="12" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+    <text x="100" y="32" text-anchor="middle" fill="#dcfce7" font-family="system-ui,Arial,sans-serif" font-size="13" font-weight="600">Shelly 3EM emulator</text>
+    <text x="100" y="52" text-anchor="middle" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="11">on HA · HTTP :80</text>
+    <text x="100" y="72" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="10">PV meter for Indevolt app</text>
+  </g>
+
+  <!-- HA -->
+  <g transform="translate(280,280)">
+    <rect width="200" height="100" rx="12" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>
+    <text x="100" y="36" text-anchor="middle" fill="#dcfce7" font-family="system-ui,Arial,sans-serif" font-size="13" font-weight="600">Home Assistant</text>
+    <text x="100" y="58" text-anchor="middle" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="11">192.168.1.75</text>
+    <text x="100" y="78" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="10">Energy · automations · emulator</text>
+  </g>
+
+  <!-- Power lines -->
+  <line x1="220" y1="155" x2="280" y2="155" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+  <line x1="480" y1="155" x2="540" y2="175" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+  <line x1="610" y1="100" x2="610" y2="70" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="640" y1="220" x2="610" y2="280" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="740" y1="175" x2="780" y2="155" stroke="#4ade80" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <line x1="740" y1="200" x2="780" y2="285" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Data lines -->
+  <line x1="380" y1="200" x2="380" y2="280" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <line x1="640" y1="220" x2="480" y2="330" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <line x1="880" y1="200" x2="640" y2="175" stroke="#4ade80" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-green)"/>
+
+  <text x="395" y="245" fill="#38bdf8" font-family="system-ui,Arial,sans-serif" font-size="10">Modbus</text>
+  <text x="520" y="318" fill="#38bdf8" font-family="system-ui,Arial,sans-serif" font-size="10">OpenData</text>
+  <text x="760" y="188" fill="#4ade80" font-family="system-ui,Arial,sans-serif" font-size="10">Solar DS</text>
+
+  <rect x="40" y="420" width="1020" height="70" rx="10" fill="#1e293b" stroke="#334155"/>
+  <text x="60" y="448" fill="#94a3b8" font-family="system-ui,Arial,sans-serif" font-size="12">Solid lines = AC power · Dashed = data / control (all local LAN, no cloud required for core monitoring)</text>
+  <text x="60" y="472" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="11">Indevolt app: Profile ’ Data Source ’ Grid = SMD1 · Solar = Shelly emulator (Atmoce pv_power)</text>
+</svg>

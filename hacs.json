@@ -1,7 +1,0 @@
-{
-  "name": "Atmoce + Indevolt HEMS",
-  "content_in_root": false,
-  "filename": "ha_atmoce_indevolt",
-  "homeassistant": "2024.1.0",
-  "render_readme": true
-}

@@ -1,42 +1,47 @@
 # Setup guide
 
-[![Data collection path](diagrams/data-flow.png)](diagrams/data-flow.svg)
+[![System overview](diagrams/system-overview.svg)](diagrams/system-overview.svg)
 
-## Your hardware layout
+## Hardware layout
 
 | Component | Role |
 |-----------|------|
 | 18× 500 W Atmoce PV panels | Solar production (9 kWp nameplate) |
 | 9× 1000 W microinverters (2 panels each) | DC/AC conversion |
 | Atmoce **MC100** combiner | String aggregation, grid metering, Modbus API |
-| Indevolt SF3000AC | AC-coupled hybrid inverter / storage controller |
-| Indevolt SFA3600 | Extended LiFePO₄ battery pack |
-| [Solarman SMD1](https://fr.indevolt.com/products/solarman-lora-compteur-electrique-intelligent-smd1) (LoRa) | Whole-home consumption meter → SF3000AC |
+| Indevolt **SF3000AC** | AC-coupled hybrid inverter / storage controller |
+| Indevolt **SFA3600** | Extended LiFePO₄ battery pack |
+| Solarman **SMD1** (LoRa) | Whole-home **grid** meter → SF3000 |
+| Shelly **Pro 3EM emulator** (HA add-on) | **PV** meter for Indevolt app |
 
-The SF3000AC is the network endpoint for Home Assistant. SFA3600 packs appear as `pack_1_soc`, `pack_2_soc`, etc. The SMD1 does **not** get its own HA integration — meter data arrives via the SF3000 OpenData API (`meter_power`). See [`docs/smd1-meter.md`](smd1-meter.md).
+## Network addresses
 
-## Step 1 — Reserve static IPs
+Reserve static DHCP leases:
 
-Give stable DHCP reservations to:
+| Device | Example IP | Port(s) |
+|--------|------------|---------|
+| Atmoce MC100 | `192.168.1.8` | Modbus TCP `502` |
+| Home Assistant | `192.168.1.75` | `8123`, Shelly emulator HTTP `80` |
+| Indevolt SF3000AC | e.g. `192.168.1.51` | OpenData HTTP `8080` |
 
-- Atmoce MC100 combiner (`192.168.1.8`)
-- Indevolt SF3000AC (example `192.168.1.51`)
+All devices must be on the **same LAN** (no guest-network isolation).
 
-## Step 2 — Enable Atmoce Modbus
+## Phase 1 — Atmoce Modbus
 
-1. Open **Atmozen**
-2. Confirm the MC100 combiner is online
-3. Ask your installer to enable **Modbus TCP** if the option is not visible
-4. Verify port `502` from a workstation:
+1. Open **Atmozen** and confirm MC100 is online.
+2. Ask installer to enable **Modbus TCP** if not visible.
+3. Verify from a workstation:
 
 ```bash
 nc -zv 192.168.1.8 502
 ```
 
-## Step 3 — Enable Indevolt local API
+See [atmoce-modbus.md](atmoce-modbus.md).
 
-1. Indevolt app → profile → create **direct device connection**
-2. Device settings → **Local API** → protocol **HTTP**
+## Phase 2 — Indevolt local API
+
+1. Indevolt app → profile → **direct device connection**.
+2. SF3000 settings → **Local API** → protocol **HTTP**.
 3. Verify OpenData:
 
 ```bash
@@ -44,21 +49,35 @@ curl -g -X POST -H "Content-Type: application/json" \
   "http://192.168.1.51:8080/rpc/Indevolt.GetData?config={\"t\":[6002]}"
 ```
 
-Expected: JSON with key `"6002"` (battery SOC).
+Expected: JSON with battery SOC (`6002`).
 
-## Step 4 — Install integration
+See [indevolt-sf3000.md](indevolt-sf3000.md).
 
-Follow the README installation section, then add the integration with both IPs, `atmoce_panel_count: 18`, and `atmoce_microinverter_count: 9`.
+## Phase 3 — Home Assistant
 
-## Step 5 — Optional HEMS package
+1. Install [official Indevolt integration](https://www.home-assistant.io/integrations/indevolt/).
+2. Install a community **Atmoce Modbus** integration (see [home-assistant.md](home-assistant.md)).
+3. Configure Energy dashboard — [energy-dashboard.md](energy-dashboard.md).
 
-Include `packages/ha_atmoce_indevolt_hems.yaml` and adjust entity IDs after the first restart.
+## Phase 4 — Indevolt dual metering
+
+For third-party PV (Atmoce) the SF3000 needs **two** meters:
+
+| Data source | Device | Guide |
+|-------------|--------|-------|
+| **Solar** | Shelly Pro 3EM emulator on HA | [pv-meter-emulator.md](pv-meter-emulator.md) |
+| **Grid** | Solarman SMD1 via LoRa | [smd1-meter.md](smd1-meter.md) |
+
+In the app: **Profile → Data Source** → set **Grid** and **Solar** to **Custom** and pick each meter.
+
+[![Dual metering](diagrams/dual-metering.svg)](diagrams/dual-metering.svg)
 
 ## Troubleshooting
 
 | Symptom | Check |
 |---------|-------|
-| Atmoce cannot connect | Modbus enabled, correct IP, same VLAN, no guest Wi-Fi isolation |
-| Indevolt cannot connect | HTTP API enabled, port 8080, firmware supports OpenData |
-| Pack SOC unavailable | Pack not detected in app; only connected packs expose SOC points |
-| HEMS sensors missing | Both Atmoce and Indevolt must be configured in the same entry |
+| Atmoce unreachable | Modbus enabled, correct IP, same VLAN |
+| Indevolt API fails | HTTP enabled, port 8080, firmware supports OpenData |
+| Shelly meter offline in app | Emulator must use HTTP **port 80** (not 8812) |
+| No PV in Indevolt | Solar data source set to Shelly emulator |
+| No grid load data | SMD1 paired, LoRa linked, Grid data source = SMD1 |

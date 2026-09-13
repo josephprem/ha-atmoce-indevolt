@@ -1,127 +1,60 @@
-# ha-atmoce-indevolt
+# Home energy setup — Atmoce + Indevolt
 
-Home Assistant custom integration for a hybrid home energy management system (HEMS) built from:
+Documentation for my hybrid home energy system (HEMS): **Atmoce** solar, **Indevolt** battery storage, **Home Assistant** monitoring, and **dual metering** in the Indevolt app.
 
-- **Atmoce** PV ecosystem (18× 500 W panels on 9× 1000 W microinverters via **MC100 combiner**, Modbus TCP)
-- **Indevolt SF3000AC** AC-coupled storage inverter
-- **Indevolt SFA3600** extended battery pack(s)
-- **Solarman SMD1** LoRa smart meter (whole-home load via SF3000)
+This repository is **documentation only** — no custom integration code. It records how the hardware is wired, which IPs and ports to use, and how data flows between devices.
 
-The integration talks to both vendors **locally** (no cloud required) and exposes unified sensors, controls, and HEMS metrics for automations and the Energy dashboard.
+[![System overview](docs/diagrams/system-overview.svg)](docs/diagrams/system-overview.svg)
 
-[![Data collection path](docs/diagrams/data-flow.png)](docs/diagrams/data-flow.svg)
+## Hardware
 
-## Features
+| Component | Role | LAN address (example) |
+|-----------|------|------------------------|
+| 18× 500 W Atmoce panels + 9× 1000 W microinverters | Solar (9 kWp) | — |
+| **Atmoce MC100** combiner | PV aggregation, grid CT, Modbus API | `192.168.1.8` |
+| **Indevolt SF3000AC** | AC-coupled inverter / storage controller | DHCP reservation |
+| **Indevolt SFA3600** | LiFePO₄ battery pack | via SF3000 |
+| **Solarman SMD1** (LoRa) | Whole-home **grid** meter → SF3000 | via Indevolt app |
+| **Shelly Pro 3EM emulator** (HA add-on) | **PV** meter for Indevolt app | `192.168.1.75` HTTP **:80** |
+| **Home Assistant** | Monitoring, Energy dashboard, emulator host | `192.168.1.75` |
 
-- Atmoce PV, grid, and cumulative energy sensors via Modbus TCP
-- Indevolt battery SOC, power, AC flow, per-pack SOC (SFA modules), and limits via HTTP OpenData
-- HEMS computed sensors when both sides are configured:
-  - Site consumption
-  - PV surplus
-  - Self-consumption rate
-- Indevolt controls: energy mode, backup SOC, feed-in limit, max AC output, grid charging
-- Services: `ha_atmoce_indevolt.charge_battery`, `ha_atmoce_indevolt.discharge_battery`
-- Example automations package for surplus charging
+## Diagrams
 
-## Prerequisites
+| Diagram | Description |
+|---------|-------------|
+| [System overview](docs/diagrams/system-overview.svg) | Full physical + data layout |
+| [Data paths to HA](docs/diagrams/data-flow.svg) | Modbus, OpenData, emulator |
+| [Dual metering](docs/diagrams/dual-metering.svg) | Grid (SMD1) + Solar (Shelly emulator) |
 
-### Atmoce MC100 combiner
+## Documentation
 
-1. **MC100** combiner (aggregates microinverter strings) or **MG100** gateway with Modbus TCP enabled (default port `502`).
-2. Enable Modbus in the **Atmozen** app if your installer has not already done so.
-3. Combiner and Home Assistant on the same LAN.
+| Guide | Contents |
+|-------|----------|
+| [Setup guide](docs/setup.md) | Static IPs, first-time checklist |
+| [Atmoce Modbus](docs/atmoce-modbus.md) | Connect clients to MC100 on port 502 |
+| [Indevolt SF3000](docs/indevolt-sf3000.md) | Local API, app, battery |
+| [PV meter emulator](docs/pv-meter-emulator.md) | Shelly 3EM simulator → Indevolt Solar data source |
+| [SMD1 grid meter](docs/smd1-meter.md) | LoRa clamp meter → Indevolt Grid data source |
+| [Home Assistant](docs/home-assistant.md) | Official Indevolt + community Atmoce integrations |
+| [Energy dashboard](docs/energy-dashboard.md) | HA Energy UI entity mapping |
 
-Typical array: **18 panels × 500 W** (9 kWp) on **9 microinverters × 1000 W** (two panels per unit).
+## Quick reference
 
-### Solarman SMD1 meter
-
-1. Pair the clamp meter to the **SF3000AC** in the Indevolt app (LoRa recommended).
-2. Enable **meter** load mode for zero-export / self-consumption.
-3. HA reads `meter_power` through the Indevolt integration — no separate Solarman integration.
-
-See [`docs/smd1-meter.md`](docs/smd1-meter.md).
-
-### Indevolt SF3000AC
-
-1. Create a **direct device connection** in the Indevolt app.
-2. Enable **Local API** and choose protocol **HTTP** (not HTTPS for now).
-3. Note the device IP (router, app, or UDP discovery on port `8099` / `AT+IGDEVICEIP`).
-4. Default OpenData port is usually `8080`.
-
-## Installation
-
-### HACS (recommended)
-
-1. Add this repository as a custom HACS integration.
-2. Install **Atmoce + Indevolt HEMS**.
-3. Restart Home Assistant.
-
-### Manual
-
-Copy `custom_components/ha_atmoce_indevolt` into your Home Assistant `config/custom_components/` directory and restart.
-
-## Configuration
-
-1. **Settings → Devices & Services → Add Integration**
-2. Search for **Atmoce + Indevolt HEMS**
-3. Enter:
-   - Atmoce combiner IP (panel count default 18, microinverter count default 9)
-   - Indevolt device IP
-   - Optional polling interval (default 30 s)
-
-At least one device IP is required.
-
-## Energy dashboard
-
-Map entities in **Settings → Dashboards → Energy**:
-
-| Role | Suggested entity |
-|------|------------------|
-| Solar production | `sensor.*_pv_power` |
-| Grid consumption | `sensor.*_grid_power` (configure sign in Energy UI) |
-| Battery | `sensor.*_battery_soc` / `sensor.*_battery_power` |
-
-See `docs/energy-dashboard.md` for a full example.
-
-## Atmozen-style dashboard
-
-A dark, mobile-friendly Lovelace dashboard (energy flow, live kW chips, 24h chart) inspired by the Atmozen app.
-
-**Installed automatically** when you add the integration (v0.2.0+). You still need the HACS frontend cards — see [`docs/dashboard.md`](docs/dashboard.md).
-
-## HEMS automations
-
-Optional package:
-
-```yaml
-# configuration.yaml
-homeassistant:
-  packages:
-    ha_atmoce_indevolt_hems: !include packages/ha_atmoce_indevolt_hems.yaml
+```text
+Atmoce MC100     Modbus TCP  192.168.1.8:502   unit ID 1
+Indevolt SF3000  HTTP        :8080             OpenData API
+Shelly emulator  HTTP        :80               Indevolt app (not :8812)
+Indevolt app     Data Source Grid  → SMD1
+                 Data Source Solar → Shelly emulator (Atmoce pv_power)
 ```
 
-This adds a surplus-charging automation that starts Indevolt charging when Atmoce PV surplus exceeds a threshold.
-
-## Architecture
-
-```
-Atmoce MC100 ──Modbus TCP──► HA integration ──► HEMS coordinator ──► sensors / automations
-Indevolt SF3000AC ──HTTP OpenData──►           ▲
-SFA3600 pack(s) ───────────────────────────────┘
-```
-
-## Development
-
-```bash
-python3 -m compileall custom_components/ha_atmoce_indevolt
-```
-
-## References
+## External references
 
 - [Indevolt OpenData API](https://github.com/INDEVOLT/indevolt-doc/blob/main/docs/hardware/geek/open-data.md)
+- [Indevolt dual metering (third-party PV)](https://docs.indevolt.com/docs/hardware/advanced/third-party-inverter-dual-metering)
 - [Home Assistant Indevolt integration](https://www.home-assistant.io/integrations/indevolt/)
+- [Shelly Pro 3EM emulator](https://github.com/bvweerd/shelly_em3pro_emulator)
 - [evcc Atmoce Modbus template](https://github.com/evcc-io/evcc/blob/master/templates/definition/meter/atmoce.yaml)
-- [Atmoce community HA integration](https://github.com/pacorola/Atmoce_battery_HA)
 
 ## License
 
