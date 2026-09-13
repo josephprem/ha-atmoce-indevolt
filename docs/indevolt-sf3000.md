@@ -4,18 +4,16 @@ The SF3000AC is the **Home Energy Hub** in the Indevolt app — the native sourc
 
 ## App data sources (this setup)
 
-| Profile → Data Source | What you use | Notes |
-|----------------------|--------------|-------|
-| **Battery / hub** | **Home Energy Hub** (native) | SF3000AC + SFA3600 — no external device needed |
-| **Grid** | **Smart meter** → Solarman **SMD1** | LoRa clamp on main feed — see [smd1-meter.md](smd1-meter.md) |
-| **Solar** | **Simulated Shelly meter** → **Shelly 3EM emulator** | Atmoce `pv_power` via HA — see [pv-meter-emulator.md](pv-meter-emulator.md) |
+| App data source | What you use | Data path |
+|-----------------|--------------|-----------|
+| **PV power** | **Shelly 3EM emulator** on HA | MC100 → Modbus → HA → emulator → app |
+| **Battery power** | **Home Energy Hub** (native) | SF3000AC + SFA3600 — not via HA |
+| **Grid power** | Solarman **SMD1** (physical meter) | LoRa clamp → hub sub-device → app |
 
 ```text
-                    ┌─ SMD1 (grid smart meter, LoRa)
-Home Energy Hub ────┤
-  SF3000 + SFA3600  └─ Shelly emulator (simulated PV meter, HTTP)
-        ▲
-        └── battery data: native (no separate source)
+Atmoce MC100 ──Modbus──► HA ──pv_power──► Shelly emulator ──► Indevolt app (PV)
+Home Energy Hub (native) ──────────────────────────────────► Indevolt app (battery)
+SMD1 (LoRa) ─────────────────────────────────────────────────► Indevolt app (grid)
 ```
 
 Configure under **Profile → Data Source**. Link SMD1 and the Shelly emulator as sub-devices on the hub first (**Device → SF3000 → + Add Sub-Device**).

@@ -1,8 +1,8 @@
 # PV meter — Shelly Pro 3EM emulator
 
-When solar comes from a third-party inverter (Atmoce), the Indevolt app needs a **Solar** data source. This setup uses a **simulated Shelly Pro 3EM** on the Home Assistant VM: it repackages Atmoce `pv_power` as a fake Shelly smart meter for the app.
+The Indevolt app **PV power** data source comes from this emulator. Home Assistant reads Atmoce PV from the MC100 over Modbus, then the **simulated Shelly Pro 3EM** add-on republishes `pv_power` as a fake Shelly meter (HTTP :80) for the app.
 
-Battery and grid use separate native sources (Home Energy Hub + SMD1) — see [indevolt-sf3000.md](indevolt-sf3000.md).
+**Battery power** is native on the hub; **grid power** comes from the physical SMD1 — see [indevolt-sf3000.md](indevolt-sf3000.md).
 
 [![Dual metering](diagrams/dual-metering.png)](diagrams/dual-metering.svg)
 

@@ -8,6 +8,20 @@ This repository is **documentation only** — no integration code. It describes 
 
 Solid arrows = AC power · dashed = data/control. More diagrams: [docs/diagrams.md](docs/diagrams.md).
 
+## Data flow
+
+**Home Assistant** reads **PV** from the Atmoce MC100 over Modbus, then the **Shelly emulator** add-on on HA exports that power to the Indevolt app (HTTP :80).
+
+The **Indevolt app** combines three data sources under **Profile → Data Source**:
+
+| Source | Origin | Path |
+|--------|--------|------|
+| **PV power** | Atmoce via Shelly emulator | MC100 → Modbus → HA → emulator → app |
+| **Battery power** | Native Indevolt hub | SF3000 + SFA3600 (no HA) |
+| **Grid power** | Physical Solarman SMD1 | LoRa clamp meter → hub → app |
+
+**Dashboards:** [Home Assistant Energy](docs/energy-dashboard.md) (Atmoce + optional hub entities) and the **Indevolt app** (optimisation using all three sources above).
+
 ## Hardware
 
 | Component | Role | Network |
@@ -31,7 +45,7 @@ Diagrams are [PlantUML](docs/diagrams.md) — PNG previews in README, SVG for zo
 | Diagram | Description |
 |---------|-------------|
 | [System overview](docs/diagrams.md#system-overview) | Full physical + data layout |
-| [Data paths to HA](docs/diagrams.md#data-paths-to-home-assistant) | Modbus, OpenData, emulator |
+| [Data flow and dashboards](docs/diagrams.md#data-flow-and-dashboards) | PV via HA, three app sources |
 | [Dual metering](docs/diagrams.md#indevolt-dual-metering) | Grid (SMD1) + Solar (Shelly emulator) |
 
 ## Documentation
@@ -49,15 +63,13 @@ Diagrams are [PlantUML](docs/diagrams.md) — PNG previews in README, SVG for zo
 
 ## Indevolt app — data sources
 
-In **Profile → Data Source**, this setup uses three distinct inputs:
+| Data source | Measures | How data arrives |
+|-------------|----------|------------------|
+| **PV power** | Atmoce solar output | HA reads MC100 Modbus → Shelly emulator on HA → app polls emulator |
+| **Battery power** | SOC, charge/discharge | Native Home Energy Hub (SF3000 + SFA3600) — not via HA |
+| **Grid power** | Whole-home import/export | Physical **SMD1** clamp meter (LoRa) → hub sub-device → app |
 
-| App source | Device / role | What it measures |
-|------------|---------------|------------------|
-| **Home Energy Hub** (native) | SF3000AC + SFA3600 | Battery SOC, charge/discharge — built into the hub |
-| **Smart meter** (grid) | Solarman **SMD1** (LoRa) | Whole-home load at the main feed |
-| **Simulated Shelly meter** (solar) | **Shelly 3EM emulator** on HA VM | Atmoce PV power (from `pv_power` via emulator) |
-
-The SMD1 and Shelly emulator are added as sub-devices on the hub, then assigned under **Data Source → Grid** and **Data Source → Solar** respectively.
+Add SMD1 and the Shelly emulator as **sub-devices** on the hub, then assign each under **Profile → Data Source**.
 
 ## Quick reference
 

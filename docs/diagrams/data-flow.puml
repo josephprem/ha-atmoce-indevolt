@@ -1,26 +1,42 @@
 @startuml data-flow
 !include _theme.puml
-title Data paths to Home Assistant
-left to right direction
+title Data flow and dashboards
+top to bottom direction
 
-component "Atmoce MC100\nModbus :502" as mc100 <<pv>>
-component "Home Energy Hub\nOpenData :8080" as sf3000 <<hub>>
-component "Home Assistant\nVM on Freebox Ultra" as ha <<ha>>
-component "Shelly emulator\nreads HA sensors" as emu <<solar>>
-component "Energy dashboard" as edash <<out>>
-component "Indevolt app\nGrid + Solar sources" as iapp <<out>>
-component "Atmozen app" as atmozen <<out>>
+rectangle "PV path (Atmoce → HA → Indevolt app)" as pvpath #111827 {
+  component "Atmoce MC100\nModbus :502" as mc100 <<pv>>
+  component "Home Assistant\nVM on Freebox Ultra" as ha <<ha>>
+  component "Shelly emulator\nHTTP :80 on HA" as emu <<solar>>
+  mc100 -down-> ha : <color:#f59e0b>Modbus · PV sensors</color>
+  ha -down-> emu : <color:#4ade80>pv_power entity</color>
+}
 
-mc100 -right-> ha : <color:#f59e0b>Modbus integration</color>
-sf3000 -right-> ha : <color:#38bdf8>Indevolt integration</color>
-ha -right-> emu : hosts add-on
-ha -down-> edash
-emu .down.> iapp : <color:#4ade80>HTTP :80</color>
-mc100 .down.> atmozen
+component "Home Energy Hub\nSF3000 + SFA3600" as hub <<hub>>
+component "Solarman SMD1\nphysical grid meter · LoRa" as smd1 <<meter>>
 
-note bottom of ha
-  Shelly emulator bridges Atmoce PV into Indevolt —
-  the hub does not read Atmoce Modbus directly.
+package "Indevolt app" {
+  component "PV data source\nShelly emulator" as src_pv <<solar>>
+  component "Battery data source\nnative hub" as src_bat <<hub>>
+  component "Grid data source\nSMD1 smart meter" as src_grid <<meter>>
+  component "App dashboard" as iapp <<out>>
+}
+
+component "HA Energy\ndashboard" as edash <<out>>
+
+emu -down-> src_pv : <color:#4ade80>HTTP</color>
+hub -down-> src_bat : <color:#38bdf8>native · no HA</color>
+smd1 -down-> src_grid : <color:#a78bfa>via hub sub-device</color>
+smd1 .up.> hub : LoRa pair
+
+src_pv -down-> iapp
+src_bat -down-> iapp
+src_grid -down-> iapp
+
+ha -right-> edash : Atmoce + hub\nOpenData entities
+
+note bottom of pvpath
+  HA reads PV from MC100 over Modbus, then the Shelly emulator
+  republishes that power for the Indevolt app — the hub never reads Atmoce Modbus.
 end note
 
 @enduml

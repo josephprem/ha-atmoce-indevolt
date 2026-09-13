@@ -14,7 +14,7 @@ Requires [Podman](https://podman.io/) or Docker (`docker.io/plantuml/plantuml`),
 
 ## System overview
 
-Physical layout, data paths, and Indevolt app sources.
+Physical AC layout plus data paths. PV reaches the Indevolt app through HA and the Shelly emulator; battery and grid use native hub and SMD1 respectively.
 
 [![System overview](diagrams/system-overview.png)](diagrams/system-overview.svg)
 
@@ -22,17 +22,23 @@ Source: [`diagrams/system-overview.puml`](diagrams/system-overview.puml)
 
 **Legend:** solid arrows = AC power · dashed arrows = data / control
 
-**App sources:** Hub (battery) · SMD1 (grid) · Shelly emulator (PV)
-
 ---
 
-## Data paths to Home Assistant
+## Data flow and dashboards
 
-[![Data paths](diagrams/data-flow.png)](diagrams/data-flow.svg)
+[![Data flow](diagrams/data-flow.png)](diagrams/data-flow.svg)
 
 Source: [`diagrams/data-flow.puml`](diagrams/data-flow.puml)
 
-Shelly emulator bridges Atmoce PV into Indevolt — the SF3000 does not read Atmoce Modbus directly.
+| Path | Flow |
+|------|------|
+| **PV** | Atmoce MC100 → Modbus → Home Assistant → Shelly emulator → Indevolt app |
+| **Battery** | Home Energy Hub → Indevolt app (native, no HA) |
+| **Grid** | Solarman SMD1 (physical meter) → Indevolt app |
+| **HA dashboard** | HA Energy UI — Atmoce entities (+ optional hub OpenData) |
+| **Indevolt dashboard** | App UI — all three data sources for battery optimisation |
+
+The hub does not read Atmoce Modbus; PV is bridged only through HA and the emulator.
 
 ---
 
@@ -44,4 +50,4 @@ Third-party PV (Atmoce) with separate grid and solar meters. Based on [Indevolt 
 
 Source: [`diagrams/dual-metering.puml`](diagrams/dual-metering.puml)
 
-Without a PV meter, the grid meter alone only sees net import/export — not total solar generation.
+Without a dedicated PV meter (Shelly emulator), the SMD1 grid meter only sees net import/export — not total solar generation.

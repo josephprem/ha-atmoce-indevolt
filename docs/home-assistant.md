@@ -1,8 +1,8 @@
 # Home Assistant
 
-Home Assistant runs as a **virtual machine on Freebox Ultra**. It collects data from Atmoce and Indevolt, hosts the Shelly PV emulator add-on, and drives the Energy dashboard.
+Home Assistant runs as a **virtual machine on Freebox Ultra**. It reads **PV from the Atmoce MC100** over Modbus, hosts the **Shelly emulator** that exports that PV to the Indevolt app, and drives the **HA Energy dashboard**. Battery and grid data in the Indevolt app come from the native hub and physical SMD1 — not through HA.
 
-[![Data paths](diagrams/data-flow.png)](diagrams/data-flow.svg)
+[![Data flow](diagrams/data-flow.png)](diagrams/data-flow.svg)
 
 ## Freebox Ultra VM
 
@@ -45,9 +45,9 @@ Entity IDs depend on the integration you install. Find them under **Settings →
 
 ## Shelly emulator add-on
 
-Feeds Atmoce PV into the Indevolt app — see [pv-meter-emulator.md](pv-meter-emulator.md).
+This is the **PV data source** for the Indevolt app: HA pulls PV from the MC100 via Modbus, then the emulator republishes it as a fake Shelly meter — see [pv-meter-emulator.md](pv-meter-emulator.md).
 
-The emulator reads HA entity states via the Supervisor API (`homeassistant_api: true`). Set `mdns_host` to the **HA VM’s LAN address**. Map `single_phase_power` to your Atmoce PV power entity.
+The emulator reads HA entity states via the Supervisor API (`homeassistant_api: true`). Set `mdns_host` to the **HA VM’s LAN address**. Map `single_phase_power` to your Atmoce `pv_power` entity.
 
 ## Template sensors (optional)
 

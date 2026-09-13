@@ -7,9 +7,9 @@ legend right
   |= Line |= Meaning |
   | <color:#fbbf24>━━</color> | AC power |
   | <color:#64748b>┄┄</color> | Data / control |
-  | Hub | Battery (native app source) |
-  | SMD1 | Grid (smart meter) |
-  | Shelly emulator | Solar / PV |
+  | PV path | MC100 → Modbus → HA → Shelly emulator → app |
+  | Battery | Native hub (no HA) |
+  | Grid | Physical SMD1 (LoRa) |
 endlegend
 
 package "Solar" {
@@ -41,8 +41,13 @@ package "Home Assistant" {
   component "HA OS VM\nFreebox Ultra" as ha <<ha>>
 }
 
-mc100 .right.> ha : <color:#38bdf8>Modbus</color>
-hub .left.> ha : <color:#38bdf8>OpenData :8080</color>
+mc100 .right.> ha : <color:#f59e0b>Modbus · PV</color>
 ha .up.> shelly : <color:#4ade80>pv_power</color>
+hub .left.> ha : <color:#38bdf8>OpenData :8080</color>\n(HA monitoring)
+
+note bottom of ha
+  Indevolt app: PV = Shelly emulator · Battery = native hub · Grid = SMD1.
+  Dashboards: HA Energy UI + Indevolt app.
+end note
 
 @enduml

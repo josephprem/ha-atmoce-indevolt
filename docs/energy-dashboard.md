@@ -60,11 +60,13 @@ On **HA 2026.9+**, verify during daylight in **Developer tools → States**:
 3. Power sensors: `device_class: power`, `state_class: measurement`, unit W
 4. Statistics: **Developer tools → Statistics** — no gaps for new entities
 
-## Indevolt app vs HA Energy
+## Two dashboards
 
-| System | Purpose |
-|--------|---------|
-| **HA Energy** | Atmoce Modbus data (PV, grid) |
-| **Indevolt app** | Hub (battery) + SMD1 (grid) + Shelly emulator (PV) for optimisation |
+| Dashboard | Data it uses | Role |
+|-----------|--------------|------|
+| **HA Energy** | Atmoce MC100 via Modbus (PV, grid); optional SF3000 via Indevolt integration | Home monitoring, history, automations |
+| **Indevolt app** | **PV** — Shelly emulator on HA (fed from Atmoce Modbus) · **Battery** — native hub · **Grid** — physical SMD1 | Battery optimisation and device control |
 
-They use different data paths — see [data-flow diagram](diagrams/data-flow.svg).
+HA gathers PV from the MC100, exports it through the Shelly emulator, and the Indevolt app reads that as its PV data source. Battery and grid in the app do not pass through HA.
+
+See [data-flow diagram](diagrams/data-flow.svg).

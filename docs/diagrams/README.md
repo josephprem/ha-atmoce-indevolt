@@ -3,7 +3,7 @@
 | PNG (README preview) | SVG | PlantUML source | Description |
 |----------------------|-----|-----------------|-------------|
 | [system-overview.png](system-overview.png) | [system-overview.svg](system-overview.svg) | [system-overview.puml](system-overview.puml) | Physical layout + data paths |
-| [data-flow.png](data-flow.png) | [data-flow.svg](data-flow.svg) | [data-flow.puml](data-flow.puml) | Paths into Home Assistant |
+| [data-flow.png](data-flow.png) | [data-flow.svg](data-flow.svg) | [data-flow.puml](data-flow.puml) | PV via HA, three app sources, dashboards |
 | [dual-metering.png](dual-metering.png) | [dual-metering.svg](dual-metering.svg) | [dual-metering.puml](dual-metering.puml) | Grid (SMD1) + Solar (Shelly) |
 
 Shared styling: [`_theme.puml`](_theme.puml)
