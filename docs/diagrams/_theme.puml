@@ -1,0 +1,96 @@
+' Shared theme — dark HEMS palette (Atmoce / Indevolt / HA)
+skinparam backgroundColor #0b1220
+skinparam defaultFontName "Segoe UI, Helvetica, Arial, sans-serif"
+skinparam defaultFontSize 13
+skinparam defaultFontColor #e5e7eb
+skinparam shadowing true
+skinparam roundcorner 14
+skinparam linetype ortho
+skinparam nodesep 48
+skinparam ranksep 40
+
+skinparam title {
+  FontColor #f9fafb
+  FontSize 20
+  FontStyle bold
+}
+
+skinparam package {
+  BackgroundColor #111827
+  BorderColor #334155
+  FontColor #cbd5e1
+  FontStyle bold
+  RoundCorner 16
+}
+
+skinparam rectangle {
+  RoundCorner 14
+  BorderThickness 2
+}
+
+skinparam arrow {
+  Color #64748b
+  FontColor #94a3b8
+  FontSize 11
+  Thickness 1.5
+}
+
+skinparam legend {
+  BackgroundColor #111827
+  BorderColor #334155
+  FontColor #cbd5e1
+}
+
+skinparam component<<pv>> {
+  BackgroundColor #1c1917
+  BorderColor #f59e0b
+  FontColor #fef3c7
+}
+
+skinparam component<<hub>> {
+  BackgroundColor #0c4a6e
+  BorderColor #38bdf8
+  FontColor #e0f2fe
+}
+
+skinparam component<<meter>> {
+  BackgroundColor #2e1065
+  BorderColor #a78bfa
+  FontColor #ede9fe
+}
+
+skinparam component<<solar>> {
+  BackgroundColor #14532d
+  BorderColor #4ade80
+  FontColor #dcfce7
+}
+
+skinparam component<<ha>> {
+  BackgroundColor #14532d
+  BorderColor #22c55e
+  FontColor #dcfce7
+}
+
+skinparam component<<load>> {
+  BackgroundColor #1f2937
+  BorderColor #6b7280
+  FontColor #f3f4f6
+}
+
+skinparam component<<grid>> {
+  BackgroundColor #1f2937
+  BorderColor #94a3b8
+  FontColor #f3f4f6
+}
+
+skinparam component<<out>> {
+  BackgroundColor #1f2937
+  BorderColor #475569
+  FontColor #cbd5e1
+}
+
+skinparam note {
+  BackgroundColor #1e293b
+  BorderColor #475569
+  FontColor #94a3b8
+}

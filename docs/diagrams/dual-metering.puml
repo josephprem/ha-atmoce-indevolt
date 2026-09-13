@@ -1,0 +1,27 @@
+@startuml dual-metering
+!include _theme.puml
+title Indevolt dual metering
+left to right direction
+
+component "Atmoce PV\nMC100 · 9 kWp" as pv <<pv>>
+component "Simulated Shelly 3EM\nSolar / PV source" as shelly <<solar>>
+component "Home load" as load <<load>>
+component "Solarman SMD1\nGrid smart meter" as smd1 <<meter>>
+component "Utility grid" as grid <<grid>>
+component "Home Energy Hub\nSF3000 + SFA3600\nBattery source" as hub <<hub>>
+
+pv -right-> load : <color:#fbbf24>AC</color>
+pv .down.> shelly : <color:#4ade80>pv_power via HA</color>
+shelly .up.> hub : <color:#4ade80>solar data</color>
+load -right-> smd1
+smd1 -right-> grid : <color:#fbbf24>net</color>
+grid -left-> smd1
+smd1 .up.> hub : <color:#a78bfa>grid data</color>
+
+note bottom
+  Without a PV meter, the grid meter only sees net import/export —
+  not total solar generation.
+  Based on Indevolt dual metering docs.
+end note
+
+@enduml

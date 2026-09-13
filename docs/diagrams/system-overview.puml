@@ -1,0 +1,48 @@
+@startuml system-overview
+!include _theme.puml
+title System overview
+top to bottom direction
+
+legend right
+  |= Line |= Meaning |
+  | <color:#fbbf24>━━</color> | AC power |
+  | <color:#64748b>┄┄</color> | Data / control |
+  | Hub | Battery (native app source) |
+  | SMD1 | Grid (smart meter) |
+  | Shelly emulator | Solar / PV |
+endlegend
+
+package "Solar" {
+  component "18× 500 W panels\n9× microinverters · 9 kWp" as panels <<pv>>
+  component "Atmoce MC100\nModbus TCP :502" as mc100 <<pv>>
+  panels -down-> mc100 : <color:#fbbf24>AC</color>
+}
+
+component "Home Energy Hub\nSF3000AC + SFA3600\nnative battery source" as hub <<hub>>
+
+component "Utility grid" as grid <<grid>>
+component "Home load" as load <<load>>
+
+mc100 -down-> hub : <color:#fbbf24>AC</color>
+hub -right-> grid : <color:#fbbf24>AC</color>
+grid -left-> hub
+hub -down-> load : <color:#fbbf24>AC</color>
+
+package "Indevolt app meters" {
+  component "Solarman SMD1\nsmart meter · LoRa" as smd1 <<meter>>
+  component "Simulated Shelly 3EM\nHA emulator · HTTP :80" as shelly <<solar>>
+}
+
+smd1 .down.> hub : <color:#a78bfa>grid source</color>
+shelly .down.> hub : <color:#4ade80>solar / PV</color>
+smd1 .left.> load : <color:#a78bfa>measures</color>
+
+package "Home Assistant" {
+  component "HA OS VM\nFreebox Ultra" as ha <<ha>>
+}
+
+mc100 .right.> ha : <color:#38bdf8>Modbus</color>
+hub .left.> ha : <color:#38bdf8>OpenData :8080</color>
+ha .up.> shelly : <color:#4ade80>pv_power</color>
+
+@enduml

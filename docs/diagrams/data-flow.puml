@@ -1,0 +1,26 @@
+@startuml data-flow
+!include _theme.puml
+title Data paths to Home Assistant
+left to right direction
+
+component "Atmoce MC100\nModbus :502" as mc100 <<pv>>
+component "Home Energy Hub\nOpenData :8080" as sf3000 <<hub>>
+component "Home Assistant\nVM on Freebox Ultra" as ha <<ha>>
+component "Shelly emulator\nreads HA sensors" as emu <<solar>>
+component "Energy dashboard" as edash <<out>>
+component "Indevolt app\nGrid + Solar sources" as iapp <<out>>
+component "Atmozen app" as atmozen <<out>>
+
+mc100 -right-> ha : <color:#f59e0b>Modbus integration</color>
+sf3000 -right-> ha : <color:#38bdf8>Indevolt integration</color>
+ha -right-> emu : hosts add-on
+ha -down-> edash
+emu .down.> iapp : <color:#4ade80>HTTP :80</color>
+mc100 .down.> atmozen
+
+note bottom of ha
+  Shelly emulator bridges Atmoce PV into Indevolt —
+  the hub does not read Atmoce Modbus directly.
+end note
+
+@enduml

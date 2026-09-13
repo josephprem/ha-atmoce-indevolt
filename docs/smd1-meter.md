@@ -4,7 +4,7 @@ The SMD1 clamp meter measures **whole-home load** and pairs to the Home Energy H
 
 Product: [Solarman LoRa SMD1 (Indevolt France)](https://fr.indevolt.com/products/solarman-lora-compteur-electrique-intelligent-smd1)
 
-See [dual metering diagram](diagrams.md#indevolt-dual-metering).
+[![Dual metering](diagrams/dual-metering.png)](diagrams/dual-metering.svg)
 
 ## Role in this setup
 

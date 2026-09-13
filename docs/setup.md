@@ -1,6 +1,6 @@
 # Setup guide
 
-See [system overview](diagrams.md#system-overview) (Mermaid diagram).
+[![System overview](diagrams/system-overview.png)](diagrams/system-overview.svg)
 
 > This guide uses placeholders (`<device-host>`) instead of real LAN addresses. Configure reservations and secrets only on your Freebox / local network.
 
@@ -77,7 +77,7 @@ The **Home Energy Hub** (SF3000AC + SFA3600) provides battery data natively. For
 1. Add and link SMD1 + Shelly emulator as **sub-devices** on the hub.
 2. **Profile → Data Source** → assign **Grid** = SMD1, **Solar** = Shelly emulator.
 
-See [dual metering diagram](diagrams.md#indevolt-dual-metering).
+[![Dual metering](diagrams/dual-metering.png)](diagrams/dual-metering.svg)
 
 ## Troubleshooting
 

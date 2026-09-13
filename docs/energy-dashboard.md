@@ -67,4 +67,4 @@ On **HA 2026.9+**, verify during daylight in **Developer tools → States**:
 | **HA Energy** | Atmoce Modbus data (PV, grid) |
 | **Indevolt app** | Hub (battery) + SMD1 (grid) + Shelly emulator (PV) for optimisation |
 
-They use different data paths — see [data paths diagram](diagrams.md#data-paths-to-home-assistant).
+They use different data paths — see [data-flow diagram](diagrams/data-flow.svg).

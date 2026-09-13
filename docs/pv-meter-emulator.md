@@ -4,7 +4,7 @@ When solar comes from a third-party inverter (Atmoce), the Indevolt app needs a 
 
 Battery and grid use separate native sources (Home Energy Hub + SMD1) — see [indevolt-sf3000.md](indevolt-sf3000.md).
 
-See [dual metering diagram](diagrams.md#indevolt-dual-metering).
+[![Dual metering](diagrams/dual-metering.png)](diagrams/dual-metering.svg)
 
 Source: [Indevolt dual metering for third-party inverters](https://docs.indevolt.com/docs/hardware/advanced/third-party-inverter-dual-metering)
 
