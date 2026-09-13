@@ -6,6 +6,7 @@ The SF3000AC is the network gateway for the battery system. The SFA3600 pack(s) 
 
 | Setting | Value |
 |---------|--------|
+| Host | `<sf3000-host>` (DHCP reservation on Freebox) |
 | Protocol | **HTTP** (not HTTPS for local OpenData) |
 | Port | `8080` (default) |
 | Discovery | UDP port `8099` / `AT+IGDEVICEIP` |
@@ -14,7 +15,7 @@ The SF3000AC is the network gateway for the battery system. The SFA3600 pack(s) 
 
 ```bash
 curl -g -X POST -H "Content-Type: application/json" \
-  "http://192.168.1.51:8080/rpc/Indevolt.GetData?config={\"t\":[6002,6004,47004]}"
+  "http://<sf3000-host>:8080/rpc/Indevolt.GetData?config={\"t\":[6002,6004,47004]}"
 ```
 
 | Point | Meaning |

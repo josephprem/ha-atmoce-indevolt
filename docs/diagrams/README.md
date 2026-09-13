@@ -1,17 +1,30 @@
 # Diagrams
 
-SVG diagrams for the home energy setup. GitHub renders SVG inline; click to open full size.
+SVG source files plus **PNG previews** for GitHub README rendering (GitHub does not inline SVG images in markdown).
 
-| File | Description |
-|------|-------------|
-| [system-overview.svg](system-overview.svg) | Physical layout, IPs, AC power + data paths |
-| [data-flow.svg](data-flow.svg) | How data reaches Home Assistant and Indevolt app |
-| [dual-metering.svg](dual-metering.svg) | Grid (SMD1) + Solar (Shelly emulator) for third-party PV |
+| PNG (inline preview) | SVG (zoomable source) | Description |
+|----------------------|------------------------|-------------|
+| [system-overview.png](system-overview.png) | [system-overview.svg](system-overview.svg) | Physical layout, AC power + data paths |
+| [data-flow.png](data-flow.png) | [data-flow.svg](data-flow.svg) | Data paths to Home Assistant and Indevolt |
+| [dual-metering.png](dual-metering.png) | [dual-metering.svg](dual-metering.svg) | Grid (SMD1) + Solar (Shelly emulator) |
+
+Diagrams omit LAN addresses, hostnames, and credentials. Home Assistant is shown as a **VM on Freebox Ultra**.
 
 ## Embed in markdown
 
 ```markdown
-[![System overview](diagrams/system-overview.svg)](diagrams/system-overview.svg)
+[![System overview](diagrams/system-overview.png)](diagrams/system-overview.svg)
+```
+
+## Regenerate PNG from SVG
+
+```bash
+python3 -m venv .venv-svg && .venv-svg/bin/pip install cairosvg
+.venv-svg/bin/python -c "
+import cairosvg
+for name, w in [('system-overview', 1100), ('data-flow', 1000), ('dual-metering', 960)]:
+    cairosvg.svg2png(url=f'docs/diagrams/{name}.svg', write_to=f'docs/diagrams/{name}.png', output_width=w)
+"
 ```
 
 ## Style

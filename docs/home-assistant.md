@@ -1,8 +1,21 @@
 # Home Assistant
 
-Home Assistant at **`192.168.1.75`** collects data from Atmoce and Indevolt, hosts the Shelly PV emulator add-on, and drives the Energy dashboard.
+Home Assistant runs as a **virtual machine on Freebox Ultra**. It collects data from Atmoce and Indevolt, hosts the Shelly PV emulator add-on, and drives the Energy dashboard.
 
-[![Data paths](diagrams/data-flow.svg)](diagrams/data-flow.svg)
+[![Data paths](diagrams/data-flow.png)](diagrams/data-flow.svg)
+
+## Freebox Ultra VM
+
+| Item | Notes |
+|------|--------|
+| Hypervisor | Freebox Ultra (Freebox OS) |
+| Guest | Home Assistant OS VM |
+| UI | `http://<ha-host>:8123` (use your VM’s LAN address) |
+| Shelly emulator | HA add-on with **host network** — advertises on `<ha-host>` |
+
+Give the VM a **DHCP reservation** on the Freebox so the address stays stable for Modbus clients, the Indevolt app, and mDNS.
+
+Do not commit `<ha-host>`, API tokens, or Wi‑Fi passwords to this repository.
 
 ## Integrations to use
 
@@ -12,17 +25,13 @@ Home Assistant at **`192.168.1.75`** collects data from Atmoce and Indevolt, hos
 | Atmoce MC100 | Community Modbus integration | HACS / manual |
 | Shelly emulator | [Shelly Pro 3EM Emulator](https://github.com/bvweerd/shelly_em3pro_emulator) add-on | Add-on |
 
-This repo previously shipped a custom `ha_atmoce_indevolt` integration — that code was removed. Use the official and community integrations below instead.
-
 ## Indevolt (core)
 
 1. **Settings → Devices & Services → Add Integration → Indevolt**
-2. Enter SF3000 IP, enable local HTTP API on device first.
+2. Enter the SF3000 LAN hostname or address; enable local HTTP API on the device first.
 3. Entities include battery SOC, power, AC flow, and `meter_power` when SMD1 is paired.
 
 ## Atmoce (community)
-
-Options (pick one):
 
 | Project | Notes |
 |---------|-------|
@@ -38,7 +47,7 @@ Entity IDs depend on the integration you install. Find them under **Settings →
 
 Feeds Atmoce PV into the Indevolt app — see [pv-meter-emulator.md](pv-meter-emulator.md).
 
-The emulator reads HA entity states via the Supervisor API (`homeassistant_api: true`). Map `single_phase_power` to your Atmoce PV power entity.
+The emulator reads HA entity states via the Supervisor API (`homeassistant_api: true`). Set `mdns_host` to the **HA VM’s LAN address**. Map `single_phase_power` to your Atmoce PV power entity.
 
 ## Template sensors (optional)
 
@@ -52,11 +61,11 @@ template:
         device_class: power
         state_class: measurement
         state: >
-          {{ (states('sensor.YOUR_ATMOCE_PV_POWER') | float(0)
-              + states('sensor.YOUR_ATMOCE_GRID_POWER') | float(0)) | round(0) }}
+          {{ (states('sensor.<your_atmoce_pv_power>') | float(0)
+              + states('sensor.<your_atmoce_grid_power>') | float(0)) | round(0) }}
 ```
 
-Replace entity IDs with yours. After SMD1 pairing, prefer Indevolt `meter_power` instead.
+Replace placeholders with your entity IDs. After SMD1 pairing, prefer Indevolt `meter_power` instead.
 
 ## Energy dashboard
 

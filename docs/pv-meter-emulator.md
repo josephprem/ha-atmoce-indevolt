@@ -1,17 +1,19 @@
 # PV meter — Shelly Pro 3EM emulator
 
-Indevolt needs a **dedicated PV meter** when solar comes from a third-party inverter (Atmoce). A **Shelly Pro 3EM emulator** on Home Assistant repackages Atmoce `pv_power` as a fake Shelly meter for the Indevolt app.
+Indevolt needs a **dedicated PV meter** when solar comes from a third-party inverter (Atmoce). A **Shelly Pro 3EM emulator** on the Home Assistant VM repackages Atmoce `pv_power` as a fake Shelly meter for the Indevolt app.
 
-[![Dual metering](diagrams/dual-metering.svg)](diagrams/dual-metering.svg)
+[![Dual metering](diagrams/dual-metering.png)](diagrams/dual-metering.svg)
 
 Source: [Indevolt dual metering for third-party inverters](https://docs.indevolt.com/docs/hardware/advanced/third-party-inverter-dual-metering)
+
+> Use your HA VM’s LAN address (`<ha-host>`) locally. Do not publish it in this repo.
 
 ## Why not Modbus from Atmoce?
 
 Indevolt only supports specific meter brands (Shelly, Solarman, etc.) over **local HTTP/LoRa** — not Atmoce Modbus. The bridge is:
 
 ```text
-Atmoce MC100 ──Modbus──► HA (pv_power sensor)
+Atmoce MC100 ──Modbus──► HA VM (pv_power sensor)
                               │
                               ▼
                     Shelly emulator (HTTP :80)
@@ -31,11 +33,11 @@ Atmoce MC100 ──Modbus──► HA (pv_power sensor)
 |--------|--------|
 | `http_port` | **`80`** ← required for Indevolt |
 | `auto_discover` | `false` |
-| `mdns_host` | `192.168.1.75` |
+| `mdns_host` | `<ha-host>` (HA VM LAN address on Freebox) |
 | `mdns_enabled` | `true` |
 | `http_enabled` | `true` |
 | `udp_enabled` | `true` |
-| `device_name` | `Atmoce PV Meter` |
+| `device_name` | Descriptive name (e.g. `PV Meter`) |
 | `single_phase_power` | Your Atmoce PV power entity |
 | `energy_delivered` | Your Atmoce PV energy total entity |
 
@@ -47,16 +49,18 @@ Replace entity IDs with yours from **Developer tools → States** (community Atm
 
 ## Get Device ID
 
+From a device on the same LAN:
+
 ```bash
-curl -s http://192.168.1.75/rpc/Shelly.GetDeviceInfo
+curl -s http://<ha-host>/rpc/Shelly.GetDeviceInfo
 ```
 
-Use the `"id"` field (e.g. `shellypro3em-aabb01`).
+Use the `"id"` field from the JSON response in the Indevolt app.
 
 ## Indevolt app pairing
 
 1. **Add Device → Shelly → Pro 3EM**
-2. IP: `192.168.1.75`, Device ID from curl above
+2. Enter `<ha-host>` and the Device ID from curl
 3. **SF3000 → + Add Sub-Device** → link meter
 4. **Profile → Data Source → Solar → Custom** → select emulator
 
@@ -64,7 +68,7 @@ Use the `"id"` field (e.g. `shellypro3em-aabb01`).
 
 | Check | Expected |
 |-------|----------|
-| Phone browser `http://192.168.1.75/rpc/EM.GetStatus` | JSON with power > 0 in daylight |
+| Phone browser `http://<ha-host>/rpc/EM.GetStatus` | JSON with power > 0 in daylight |
 | Indevolt device card | Online, live watts |
 | Solar data source | Shows emulator name |
 

@@ -6,56 +6,56 @@
     </marker>
   </defs>
   <rect width="1000" height="440" rx="16" fill="#111827"/>
-  <text x="40" y="44" fill="#f9fafb" font-family="system-ui,Arial,sans-serif" font-size="22" font-weight="700">Data paths to Home Assistant</text>
-  <text x="40" y="68" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="13">Official / community integrations · local only</text>
+  <text x="40" y="44" fill="#f9fafb" font-family="Arial,sans-serif" font-size="22" font-weight="700">Data paths to Home Assistant</text>
+  <text x="40" y="68" fill="#9ca3af" font-family="Arial,sans-serif" font-size="13">Official / community integrations - local only</text>
 
   <g transform="translate(40,100)">
     <rect width="200" height="72" rx="10" fill="#1f2937" stroke="#f59e0b" stroke-width="2"/>
-    <text x="100" y="28" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Atmoce MC100</text>
-    <text x="100" y="48" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">Modbus TCP :502</text>
-    <text x="100" y="64" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="9">PV · grid · energy totals</text>
+    <text x="100" y="28" text-anchor="middle" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="12" font-weight="600">Atmoce MC100</text>
+    <text x="100" y="48" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">Modbus TCP :502</text>
+    <text x="100" y="64" text-anchor="middle" fill="#64748b" font-family="Arial,sans-serif" font-size="9">PV, grid, energy totals</text>
   </g>
 
   <g transform="translate(40,200)">
     <rect width="200" height="72" rx="10" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
-    <text x="100" y="28" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Indevolt SF3000AC</text>
-    <text x="100" y="48" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">HTTP OpenData :8080</text>
-    <text x="100" y="64" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="9">SOC · power · SMD1 meter_power</text>
+    <text x="100" y="28" text-anchor="middle" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="12" font-weight="600">Indevolt SF3000AC</text>
+    <text x="100" y="48" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">HTTP OpenData :8080</text>
+    <text x="100" y="64" text-anchor="middle" fill="#64748b" font-family="Arial,sans-serif" font-size="9">SOC, power, SMD1 meter_power</text>
   </g>
 
   <g transform="translate(40,300)">
     <rect width="200" height="72" rx="10" fill="#1f2937" stroke="#a78bfa" stroke-width="2"/>
-    <text x="100" y="28" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Shelly emulator (HA)</text>
-    <text x="100" y="48" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">reads HA Atmoce sensors</text>
-    <text x="100" y="64" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="9">feeds Indevolt app · not HA directly</text>
+    <text x="100" y="28" text-anchor="middle" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="12" font-weight="600">Shelly emulator (HA)</text>
+    <text x="100" y="48" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">reads HA Atmoce sensors</text>
+    <text x="100" y="64" text-anchor="middle" fill="#64748b" font-family="Arial,sans-serif" font-size="9">feeds Indevolt app (not HA directly)</text>
   </g>
 
   <g transform="translate(360,155)">
     <rect width="260" height="150" rx="14" fill="#1f2937" stroke="#22c55e" stroke-width="2"/>
-    <text x="130" y="36" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,Arial,sans-serif" font-size="14" font-weight="600">Home Assistant</text>
-    <text x="130" y="58" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">192.168.1.75</text>
-    <text x="130" y="82" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">Indevolt integration (core)</text>
-    <text x="130" y="100" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">Atmoce Modbus integration (community)</text>
-    <text x="130" y="118" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">Shelly emulator add-on</text>
-    <text x="130" y="136" text-anchor="middle" fill="#64748b" font-family="system-ui,Arial,sans-serif" font-size="9">Energy dashboard · automations</text>
+    <text x="130" y="36" text-anchor="middle" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="14" font-weight="600">Home Assistant</text>
+    <text x="130" y="58" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">VM on Freebox Ultra</text>
+    <text x="130" y="82" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">Indevolt integration (core)</text>
+    <text x="130" y="100" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">Atmoce Modbus integration (community)</text>
+    <text x="130" y="118" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">Shelly emulator add-on</text>
+    <text x="130" y="136" text-anchor="middle" fill="#64748b" font-family="Arial,sans-serif" font-size="9">Energy dashboard, automations</text>
   </g>
 
   <g transform="translate(720,120)">
     <rect width="240" height="64" rx="10" fill="#1f2937" stroke="#22c55e" stroke-width="2"/>
-    <text x="120" y="28" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Energy dashboard</text>
-    <text x="120" y="48" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">PV · grid import/export · battery</text>
+    <text x="120" y="28" text-anchor="middle" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="12" font-weight="600">Energy dashboard</text>
+    <text x="120" y="48" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">PV, grid import/export, battery</text>
   </g>
 
   <g transform="translate(720,220)">
     <rect width="240" height="64" rx="10" fill="#1f2937" stroke="#4ade80" stroke-width="2"/>
-    <text x="120" y="28" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Indevolt app</text>
-    <text x="120" y="48" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">Data Source: Grid + Solar meters</text>
+    <text x="120" y="28" text-anchor="middle" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="12" font-weight="600">Indevolt app</text>
+    <text x="120" y="48" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">Data Source: Grid + Solar meters</text>
   </g>
 
   <g transform="translate(720,320)">
     <rect width="240" height="64" rx="10" fill="#1f2937" stroke="#f59e0b" stroke-width="2"/>
-    <text x="120" y="28" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,Arial,sans-serif" font-size="12" font-weight="600">Atmozen app</text>
-    <text x="120" y="48" text-anchor="middle" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="10">Atmoce cloud / installer view</text>
+    <text x="120" y="28" text-anchor="middle" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="12" font-weight="600">Atmozen app</text>
+    <text x="120" y="48" text-anchor="middle" fill="#9ca3af" font-family="Arial,sans-serif" font-size="10">Atmoce cloud / installer view</text>
   </g>
 
   <line x1="240" y1="136" x2="360" y2="190" stroke="#38bdf8" stroke-width="2" marker-end="url(#data)"/>
@@ -64,5 +64,5 @@
   <line x1="620" y1="190" x2="720" y2="152" stroke="#38bdf8" stroke-width="2" marker-end="url(#data)"/>
   <line x1="480" y1="250" x2="720" y2="252" stroke="#4ade80" stroke-width="2" marker-end="url(#data)"/>
 
-  <text x="40" y="410" fill="#9ca3af" font-family="system-ui,Arial,sans-serif" font-size="11">Shelly emulator bridges Atmoce PV into Indevolt — Indevolt does not read Atmoce Modbus directly</text>
+  <text x="40" y="410" fill="#9ca3af" font-family="Arial,sans-serif" font-size="11">Shelly emulator bridges Atmoce PV into Indevolt - Indevolt does not read Atmoce Modbus directly</text>
 </svg>

@@ -2,13 +2,13 @@
 
 The MC100 combiner (with integrated MG100 gateway) exposes a **Modbus TCP server**. External systems connect **to** Atmoce — Atmoce does not act as a Modbus client to other servers.
 
-[![Data paths](diagrams/data-flow.svg)](diagrams/data-flow.svg)
+[![Data paths](diagrams/data-flow.png)](diagrams/data-flow.svg)
 
 ## Connection parameters
 
 | Parameter | Value |
 |-----------|--------|
-| Host | MC100 IP (`192.168.1.8`) |
+| Host | MC100 LAN address (`<mc100-host>` — DHCP reservation on Freebox) |
 | Port | `502` |
 | Unit / slave ID | `1` |
 | Register type | Holding registers |
@@ -19,10 +19,10 @@ The MC100 combiner (with integrated MG100 gateway) exposes a **Modbus TCP server
 1. **Atmozen** app — confirm combiner online.
 2. Installer enables **Modbus TCP** (may not be visible to end users).
 3. Firmware **01.01.00.18.10+** required ([evcc docs](https://docs.evcc.io/en/meters/atmoce-mg100-m-gateway)).
-4. Test:
+4. Test from a machine on the same LAN:
 
 ```bash
-nc -zv 192.168.1.8 502
+nc -zv <mc100-host> 502
 ```
 
 > **Note:** **MC100L** may not support third-party Modbus. This setup uses **MC100** with MG100.
@@ -44,7 +44,7 @@ From the [evcc Atmoce template](https://github.com/evcc-io/evcc/blob/master/temp
 
 | Client | Purpose |
 |--------|---------|
-| **Home Assistant** | Community Atmoce Modbus integration → sensors |
+| **Home Assistant VM** | Community Atmoce Modbus integration → sensors |
 | **evcc** | Smart charging / solar surplus |
 | **GuyTec ModBus Client** | Desktop logging ([guytec.com/ModBus](https://guytec.com/ModBus/)) |
 
@@ -53,13 +53,13 @@ From the [evcc Atmoce template](https://github.com/evcc-io/evcc/blob/master/temp
 The SF3000 cannot poll the MC100 directly. PV data reaches Indevolt via the **Shelly emulator** (see [pv-meter-emulator.md](pv-meter-emulator.md)):
 
 ```text
-Atmoce (:502) → HA reads pv_power → Shelly emulator (:80) → Indevolt app
+Atmoce (:502) → HA VM reads pv_power → Shelly emulator (:80) → Indevolt app
 ```
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---------|-----|
-| Connection refused | Modbus not enabled; wrong IP |
+| Connection refused | Modbus not enabled; wrong host |
 | All zeros | MC100 offline; check Atmozen |
-| Works from LAN but not HA | Guest Wi‑Fi / VLAN isolation |
+| Works from LAN but not HA VM | Guest Wi‑Fi / VLAN / Freebox VM bridge |
