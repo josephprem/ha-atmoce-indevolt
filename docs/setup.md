@@ -1,6 +1,6 @@
 # Setup guide
 
-[![System overview](diagrams/system-overview.png)](diagrams/system-overview.svg)
+See [system overview](diagrams.md#system-overview) (Mermaid diagram).
 
 > This guide uses placeholders (`<device-host>`) instead of real LAN addresses. Configure reservations and secrets only on your Freebox / local network.
 
@@ -64,18 +64,20 @@ See [indevolt-sf3000.md](indevolt-sf3000.md).
 4. Install a community **Atmoce Modbus** integration — use `<mc100-host>` (see [home-assistant.md](home-assistant.md)).
 5. Configure Energy dashboard — [energy-dashboard.md](energy-dashboard.md).
 
-## Phase 4 — Indevolt dual metering
+## Phase 4 — Indevolt app data sources
 
-For third-party PV (Atmoce) the SF3000 needs **two** meters:
+The **Home Energy Hub** (SF3000AC + SFA3600) provides battery data natively. For third-party PV (Atmoce), add two external meters:
 
-| Data source | Device | Guide |
-|-------------|--------|-------|
-| **Solar** | Shelly Pro 3EM emulator on HA VM | [pv-meter-emulator.md](pv-meter-emulator.md) |
-| **Grid** | Solarman SMD1 via LoRa | [smd1-meter.md](smd1-meter.md) |
+| App data source | Device | Guide |
+|-----------------|--------|-------|
+| **Battery** | Home Energy Hub (native) | [indevolt-sf3000.md](indevolt-sf3000.md) |
+| **Grid** | Solarman SMD1 smart meter (LoRa) | [smd1-meter.md](smd1-meter.md) |
+| **Solar** | Simulated Shelly 3EM emulator on HA VM | [pv-meter-emulator.md](pv-meter-emulator.md) |
 
-In the app: **Profile → Data Source** → set **Grid** and **Solar** to **Custom** and pick each meter.
+1. Add and link SMD1 + Shelly emulator as **sub-devices** on the hub.
+2. **Profile → Data Source** → assign **Grid** = SMD1, **Solar** = Shelly emulator.
 
-[![Dual metering](diagrams/dual-metering.png)](diagrams/dual-metering.svg)
+See [dual metering diagram](diagrams.md#indevolt-dual-metering).
 
 ## Troubleshooting
 

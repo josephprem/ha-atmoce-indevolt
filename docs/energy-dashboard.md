@@ -65,6 +65,6 @@ On **HA 2026.9+**, verify during daylight in **Developer tools → States**:
 | System | Purpose |
 |--------|---------|
 | **HA Energy** | Atmoce Modbus data (PV, grid) |
-| **Indevolt app** | SF3000 control + SMD1/Shelly meters for battery optimisation |
+| **Indevolt app** | Hub (battery) + SMD1 (grid) + Shelly emulator (PV) for optimisation |
 
-They use different data paths — see [data-flow diagram](diagrams/data-flow.svg).
+They use different data paths — see [data paths diagram](diagrams.md#data-paths-to-home-assistant).

@@ -4,7 +4,56 @@ Documentation for a hybrid home energy system (HEMS): **Atmoce** solar, **Indevo
 
 This repository is **documentation only** — no integration code. It describes hardware roles, ports, protocols, and data flow. **No real hostnames, IP addresses, or credentials are stored here**; use your own LAN reservations and secrets locally.
 
-[![System overview](docs/diagrams/system-overview.png)](docs/diagrams/system-overview.svg)
+```mermaid
+flowchart TB
+    subgraph pv["Solar"]
+        PANELS["18x 500 W panels\n9x microinverters · 9 kWp"]
+        MC100["Atmoce MC100\nModbus TCP :502"]
+        PANELS -->|AC| MC100
+    end
+
+    subgraph hub["Home Energy Hub"]
+        SF3000["SF3000AC + SFA3600\nnative battery source"]
+    end
+
+    GRID["Utility grid"]
+    LOAD["Home load"]
+
+    MC100 -->|AC| SF3000
+    SF3000 <-->|AC| GRID
+    SF3000 -->|AC| LOAD
+
+    subgraph meters["Indevolt app meters"]
+        SMD1["Solarman SMD1\nsmart meter · LoRa"]
+        SHELLY["Simulated Shelly 3EM\nHA emulator · HTTP :80"]
+    end
+
+    SMD1 -.->|grid source| SF3000
+    SHELLY -.->|solar / PV source| SF3000
+    SMD1 -.->|measures| LOAD
+
+    subgraph ha["Home Assistant"]
+        HA["HA OS VM\nFreebox Ultra"]
+    end
+
+    MC100 -.->|Modbus| HA
+    SF3000 -.->|OpenData :8080| HA
+    HA -.->|pv_power| SHELLY
+
+    classDef ac stroke:#f59e0b,stroke-width:2px
+    classDef hub stroke:#38bdf8,stroke-width:2px
+    classDef meter stroke:#a78bfa,stroke-width:2px
+    classDef solar stroke:#4ade80,stroke-width:2px
+    classDef ha stroke:#22c55e,stroke-width:2px
+
+    class PANELS,MC100 ac
+    class SF3000 hub
+    class SMD1 meter
+    class SHELLY solar
+    class HA ha
+```
+
+Solid arrows = AC power · dotted = data/control. More diagrams: [docs/diagrams.md](docs/diagrams.md).
 
 ## Hardware
 
@@ -24,18 +73,19 @@ Home Assistant runs as a **virtual machine on Freebox Ultra** (Freebox OS). The 
 
 ## Diagrams
 
+All diagrams are [Mermaid](docs/diagrams.md) — they render inline on GitHub.
+
 | Diagram | Description |
 |---------|-------------|
-| [System overview](docs/diagrams/system-overview.svg) ([png](docs/diagrams/system-overview.png)) | Full physical + data layout |
-| [Data paths to HA](docs/diagrams/data-flow.svg) ([png](docs/diagrams/data-flow.png)) | Modbus, OpenData, emulator |
-| [Dual metering](docs/diagrams/dual-metering.svg) ([png](docs/diagrams/dual-metering.png)) | Grid (SMD1) + Solar (Shelly emulator) |
-
-GitHub README uses **PNG** for inline previews; click through to **SVG** for full resolution.
+| [System overview](docs/diagrams.md#system-overview) | Full physical + data layout |
+| [Data paths to HA](docs/diagrams.md#data-paths-to-home-assistant) | Modbus, OpenData, emulator |
+| [Dual metering](docs/diagrams.md#indevolt-dual-metering) | Grid (SMD1) + Solar (Shelly emulator) |
 
 ## Documentation
 
 | Guide | Contents |
 |-------|----------|
+| [Diagrams](docs/diagrams.md) | Mermaid system overview, data flow, dual metering |
 | [Setup guide](docs/setup.md) | DHCP reservations, first-time checklist |
 | [Atmoce Modbus](docs/atmoce-modbus.md) | Connect clients to MC100 on port 502 |
 | [Indevolt SF3000](docs/indevolt-sf3000.md) | Local API, app, battery |
@@ -44,18 +94,29 @@ GitHub README uses **PNG** for inline previews; click through to **SVG** for ful
 | [Home Assistant](docs/home-assistant.md) | VM on Freebox Ultra, integrations |
 | [Energy dashboard](docs/energy-dashboard.md) | HA Energy UI entity mapping |
 
+## Indevolt app — data sources
+
+In **Profile → Data Source**, this setup uses three distinct inputs:
+
+| App source | Device / role | What it measures |
+|------------|---------------|------------------|
+| **Home Energy Hub** (native) | SF3000AC + SFA3600 | Battery SOC, charge/discharge — built into the hub |
+| **Smart meter** (grid) | Solarman **SMD1** (LoRa) | Whole-home load at the main feed |
+| **Simulated Shelly meter** (solar) | **Shelly 3EM emulator** on HA VM | Atmoce PV power (from `pv_power` via emulator) |
+
+The SMD1 and Shelly emulator are added as sub-devices on the hub, then assigned under **Data Source → Grid** and **Data Source → Solar** respectively.
+
 ## Quick reference
 
 ```text
-Atmoce MC100     Modbus TCP  <mc100-host>:502    unit ID 1
-Indevolt SF3000  HTTP        <sf3000-host>:8080  OpenData API
-Home Assistant   VM          Freebox Ultra       UI :8123
-Shelly emulator  HTTP        <ha-host>:80        Indevolt app (not :8812)
-Indevolt app     Data Source Grid  → SMD1
-                 Data Source Solar → Shelly emulator (Atmoce pv_power)
+Atmoce MC100        Modbus TCP  <mc100-host>:502     unit ID 1
+Home Energy Hub     native      SF3000AC + SFA3600   battery (app)
+SMD1 smart meter    LoRa        via SF3000           grid (app)
+Shelly emulator     HTTP        <ha-host>:80         PV / solar (app)
+Home Assistant      VM          Freebox Ultra        UI :8123, hosts emulator
 ```
 
-Replace `<mc100-host>`, `<sf3000-host>`, and `<ha-host>` with addresses from your router or Freebox device list.
+Replace `<mc100-host>` and `<ha-host>` with addresses from your Freebox device list.
 
 ## External references
 

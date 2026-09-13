@@ -1,17 +1,18 @@
 # Solarman SMD1 — grid meter (LoRa)
 
-The SMD1 clamp meter measures **whole-home load** and pairs to the SF3000 over **LoRa**. It is the **Grid** data source in the Indevolt app dual-metering setup.
+The SMD1 clamp meter measures **whole-home load** and pairs to the Home Energy Hub (SF3000) over **LoRa**. In the Indevolt app it is the **smart meter** assigned as the **Grid** data source.
 
 Product: [Solarman LoRa SMD1 (Indevolt France)](https://fr.indevolt.com/products/solarman-lora-compteur-electrique-intelligent-smd1)
 
-[![Dual metering](diagrams/dual-metering.png)](diagrams/dual-metering.svg)
+See [dual metering diagram](diagrams.md#indevolt-dual-metering).
 
 ## Role in this setup
 
-| Meter | Measures | Indevolt data source |
-|-------|----------|----------------------|
-| **SMD1** | Home load at main feed | **Grid** |
-| **Shelly emulator** | Atmoce PV output | **Solar** |
+| Meter | Measures | Indevolt app role |
+|-------|----------|-----------------|
+| **Home Energy Hub** | Battery SOC / power | Native battery source |
+| **SMD1** | Home load at main feed | **Smart meter** → Grid |
+| **Shelly emulator** | Atmoce PV output | **Simulated Shelly** → Solar |
 
 ```text
 Atmoce PV ──► grid / home
@@ -30,7 +31,7 @@ The SMD1 has **no direct HA integration**. Data arrives via the SF3000 OpenData 
 3. Pair to SF3000 — prefer **LoRa** for stable indoor link.
 4. Confirm meter connection status in app.
 5. **SF3000 → + Add Sub-Device** → link SMD1.
-6. **Profile → Data Source → Grid → Custom** → select SMD1.
+6. **Profile → Data Source → Grid** → select the SMD1 smart meter.
 7. Energy mode: **Self-Consumed Prioritized** with **Smart Meter** load type.
 
 ## Home Assistant

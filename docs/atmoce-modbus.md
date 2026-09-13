@@ -2,7 +2,7 @@
 
 The MC100 combiner (with integrated MG100 gateway) exposes a **Modbus TCP server**. External systems connect **to** Atmoce — Atmoce does not act as a Modbus client to other servers.
 
-[![Data paths](diagrams/data-flow.png)](diagrams/data-flow.svg)
+See [data paths diagram](diagrams.md#data-paths-to-home-assistant).
 
 ## Connection parameters
 

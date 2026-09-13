@@ -2,7 +2,7 @@
 
 Home Assistant runs as a **virtual machine on Freebox Ultra**. It collects data from Atmoce and Indevolt, hosts the Shelly PV emulator add-on, and drives the Energy dashboard.
 
-[![Data paths](diagrams/data-flow.png)](diagrams/data-flow.svg)
+See [data paths diagram](diagrams.md#data-paths-to-home-assistant).
 
 ## Freebox Ultra VM
 

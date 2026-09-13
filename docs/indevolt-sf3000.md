@@ -1,6 +1,24 @@
-# Indevolt SF3000AC + SFA3600
+# Indevolt SF3000AC + SFA3600 (Home Energy Hub)
 
-The SF3000AC is the network gateway for the battery system. The SFA3600 pack(s) connect through it — there is no separate IP for the pack.
+The SF3000AC is the **Home Energy Hub** in the Indevolt app — the native source for battery data. SFA3600 pack(s) connect through it; there is no separate IP for the pack.
+
+## App data sources (this setup)
+
+| Profile → Data Source | What you use | Notes |
+|----------------------|--------------|-------|
+| **Battery / hub** | **Home Energy Hub** (native) | SF3000AC + SFA3600 — no external device needed |
+| **Grid** | **Smart meter** → Solarman **SMD1** | LoRa clamp on main feed — see [smd1-meter.md](smd1-meter.md) |
+| **Solar** | **Simulated Shelly meter** → **Shelly 3EM emulator** | Atmoce `pv_power` via HA — see [pv-meter-emulator.md](pv-meter-emulator.md) |
+
+```text
+                    ┌─ SMD1 (grid smart meter, LoRa)
+Home Energy Hub ────┤
+  SF3000 + SFA3600  └─ Shelly emulator (simulated PV meter, HTTP)
+        ▲
+        └── battery data: native (no separate source)
+```
+
+Configure under **Profile → Data Source**. Link SMD1 and the Shelly emulator as sub-devices on the hub first (**Device → SF3000 → + Add Sub-Device**).
 
 ## Local API (Home Assistant)
 
@@ -40,15 +58,6 @@ For whole-home optimisation with external meters:
 
 - **SMD1** — grid / home load ([smd1-meter.md](smd1-meter.md))
 - **Shelly Pro 3EM** — PV or grid meter ([pv-meter-emulator.md](pv-meter-emulator.md))
-
-## Data sources (dual metering)
-
-**Profile → Data Source**:
-
-| Source | Device in this setup |
-|--------|----------------------|
-| **Grid** | Solarman SMD1 |
-| **Solar** | Shelly Pro 3EM emulator (Atmoce PV) |
 
 See [Indevolt dual metering docs](https://docs.indevolt.com/docs/hardware/advanced/third-party-inverter-dual-metering).
 
